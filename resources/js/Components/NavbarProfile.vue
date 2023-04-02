@@ -8,7 +8,7 @@
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <div class="row">
                     <div class="col-6">
-                        <Link :href="route('admin.users')" class="dropdown-icon-item">
+                        <Link :href="route('admin.index')" class="dropdown-icon-item">
                         <i class="fa fa-black-tie fa-5x"></i>
                         <span class="h6 text-uppercase">Administrator</span>
                         </Link>

@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
+import StartAndEndDate from '@/Components/StartAndEndDate.vue';
 
 const props = defineProps( { title: String, user: Object } );
 const form = useForm( props.user );
@@ -212,15 +213,8 @@ const currentTab = ref( 0 );
                                     <label>Location *</label>
                                 </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label>Start Date</label>
-                                <input type='month' class='form-control'>
-                            </div>
-                            <div class="form-group col-md-4 d-flex justify-content-between align-items-end">
-                                <div class='w-100 mr-2'>
-                                    <label>End Date</label>
-                                    <input type='month' class='form-control '>
-                                </div>
+                            <div class="col-md-7">
+                                <start-and-end-date v-model="form.education.date"></start-and-end-date>
                             </div>
                         </div>
                     </div>
@@ -248,15 +242,8 @@ const currentTab = ref( 0 );
                                     <label>Location *</label>
                                 </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label>Start Date</label>
-                                <input type='month' class='form-control'>
-                            </div>
-                            <div class="form-group col-md-4 d-flex justify-content-between align-items-end">
-                                <div class='w-100 mr-2'>
-                                    <label>End Date</label>
-                                    <input type='month' class='form-control '>
-                                </div>
+                            <div class="col-md-7">
+                                <start-and-end-date v-model="form.work_experience.date"></start-and-end-date>
                             </div>
                         </div>
                     </div>

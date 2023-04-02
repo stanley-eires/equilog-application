@@ -82,22 +82,22 @@ class User extends Authenticatable
             ];
             $rand = mt_rand(0, 1);
             $work_start = mt_rand($fixed_date, time());
-            $work_end = ($rand == 0) ? date("d/m/Y", mt_rand($work_start, time())) : 'Current';
+            $work_end = ($rand == 0) ? date("Y-m", mt_rand($work_start, time())) : 'Current';
 
             $user['work_experience'] = [
                 'title' => $faker->jobTitle,
                 'employer' => $faker->company,
                 'location' => $faker->address,
-                'date' => date("d/m/Y", ($work_start)) . ' - ' . $work_end
+                'date' => date("Y-m", ($work_start)) . ' - ' . $work_end
             ];
             $rand = mt_rand(0, 1);
             $work_start = mt_rand($fixed_date, time());
-            $work_end = ($rand == 0) ? date("d/m/Y", mt_rand($work_start, time())) : 'Current';
+            $work_end = ($rand == 0) ? date("Y-m", mt_rand($work_start, time())) : 'Current';
             $user['education'] = [
                 'degree' => $faker->randomElement(['School Certificate', 'National Diploma', 'Bachelor Degree', 'Master Degree', 'Doctoral Degree']),
                 'institution' => $faker->company,
                 'location' => $faker->address,
-                'date' => date("d/m/Y", ($work_start)) . ' - ' . $work_end
+                'date' => date("Y-m", ($work_start)) . ' - ' . $work_end
             ];
             $user['medicals'] = [
                 'genotype' => $faker->randomElement(['AA', 'AO', 'BB', 'BO', 'AB', 'OO']),

@@ -34,6 +34,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+
         $agent = new Agent();
         $request->authenticate();
         if (Auth::user()->status == 0) {

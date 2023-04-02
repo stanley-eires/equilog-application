@@ -1,10 +1,16 @@
 <script setup>
 import Index from '@/Pages/Admin/User/Index.vue';
 import { Link } from '@inertiajs/vue3';
+import moment from 'moment';
 
 
 
 defineProps( { title: String, user: Object } );
+
+let properDates = ( date ) => {
+    let [ prefix, suffix ] = date.split( ' - ' ).map( e => e.trim() )
+    return `${ moment( prefix ).format( 'MMMM, YYYY' ) } - ${ suffix.toLowerCase() === "current" ? 'Current' : moment( suffix ).format( 'MMMM, YYYY' ) }`;
+}
 
 </script>
 <template>
@@ -17,7 +23,7 @@ defineProps( { title: String, user: Object } );
                     <h4>Recent Work Experience</h4>
                     <div class="row row-cols-md-2 mb-5">
                         <div>
-                            <p>{{ user.work_experience.date }}<br>
+                            <p>{{ properDates(user.work_experience.date) }}<br>
                                 <span class="text-muted">{{ user.work_experience.location }}</span>
                             </p>
                         </div>
@@ -31,7 +37,7 @@ defineProps( { title: String, user: Object } );
                     <h4>Highest Education Background</h4>
                     <div class="row row-cols-md-2 mb-5">
                         <div>
-                            <p>{{ user.education.date }}<br>
+                            <p>{{ properDates(user.education.date) }}<br>
                                 <span class="text-muted"> {{ user.education.location }}</span>
                             </p>
                         </div>

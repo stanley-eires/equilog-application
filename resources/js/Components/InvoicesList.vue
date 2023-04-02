@@ -13,7 +13,7 @@ const is_admin = computed( () => {
 
 </script>
 <template>
-    <div class="table-responsive" style="min-height:50vh">
+    <div class="table-responsive" style="min-height:30vh">
         <table class="table table-centered">
             <thead class="text-nowrap">
                 <tr>

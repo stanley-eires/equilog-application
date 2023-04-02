@@ -45,6 +45,7 @@ Route::prefix('myaccount')->group(
 );
 Route::prefix('admin')->group(
     function () {
+        Route::get('/', [Admin::class, 'index'])->name('admin.index')->middleware('auth');
         Route::get('/users', [Admin::class, 'users'])->name('admin.users')->middleware('auth');
         Route::get('/users/create', [Admin::class, 'userCreate'])->name('users.create')->middleware('auth');
         Route::post('/users/create', [Admin::class, 'userSave'])->name('users.save')->middleware('auth');

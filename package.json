@@ -23,7 +23,10 @@
         "@tinymce/tinymce-vue": "^4.0.7",
         "@vitejs/plugin-vue": "^4.0.0",
         "@webzlodimir/vue-avatar": "^0.0.8",
+        "apexcharts": "^3.37.2",
         "bootstrap": "^5.2.3",
-        "moment": "^2.29.4"
+        "counterup2": "^2.0.2",
+        "moment": "^2.29.4",
+        "vue3-apexcharts": "^1.4.1"
     }
 }

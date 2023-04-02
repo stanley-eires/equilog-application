@@ -25,7 +25,7 @@ class CoursesUsers extends Model
 
         foreach ($users as $key) {
             $items = [];
-            for ($i = 0; $i < mt_rand(0, count($courses)); $i++) {
+            for ($i = 0; $i < mt_rand(1, count($courses)); $i++) {
                 $items[] = [
                     'id' => $courses[$i]->id, 'description' => $courses[$i]->name,
                     'cost' => $courses[$i]->cost
@@ -43,7 +43,7 @@ class CoursesUsers extends Model
         $faker = \Faker\Factory::create();
         $invoices = Invoice::select('id', 'amount')->inRandomOrder()->get();
         foreach ($invoices as $key) {
-            $payment_status = $faker->randomElement([NULL, 0, 1, 1, 1, 1]);
+            $payment_status = $faker->randomElement([NULL, 0, 1, 1, 1, 1,1,1]);
             if ($payment_status !== NULL) {
                 $gateway = $faker->randomElement(['Bank Transfer', 'Bank Transfer', 'Paystack']);
                 Transaction::create([
@@ -61,7 +61,7 @@ class CoursesUsers extends Model
         $invoices = Invoice::select('user_id', 'items', 'id')->where('payment_status', 1)->get();
 
         foreach ($invoices as $key) {
-            $approved = $faker->randomElement([0, 0, 1, 1, 2, 2, 2, 2, 2, 2]);
+            $approved = $faker->randomElement([0, 1, 1, 2, 2, 2, 2, 2, 2,2,2]);
             if ($approved > 0) {
                 Invoice::where('id', $key->id)->update([
                     'status' => $approved,

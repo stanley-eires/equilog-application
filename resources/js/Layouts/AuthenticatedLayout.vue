@@ -22,6 +22,7 @@ const menus = {
     ],
     admin: [
         { name: 'Administrator' },
+        { name: 'Dashboard', icon: 'fa-home', href: "admin.index", active: [ 'Admin/Dashboard' ].includes( usePage().component ) },
         { name: 'Users', icon: 'fa-user', href: "admin.users", active: [ 'Admin/Users', 'Admin/User/Profile', 'Admin/User/Courses', 'Admin/User/Transactions', 'Admin/User/Modify' ].includes( usePage().component ) },
         // { name: 'Cohorts', icon: 'fa-users', href: "myaccount.personal-info", component: '' },
         { name: 'Courses', icon: 'fa-book', href: "admin.courses", active: [ 'Admin/Courses/Courses', 'Admin/Courses/Overview', 'Admin/Courses/Enrollments', 'Admin/Courses/Modify' ].includes( usePage().component ) },

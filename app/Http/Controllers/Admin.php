@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Email;
+use App\Models\Activity;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
@@ -18,6 +19,23 @@ use stdClass;
 
 class Admin extends Controller
 {
+    public function index()
+    {
+        $data['title'] = "Dashboard";
+        $data['stats']['unique_user_enrolled'] = CoursesUsers::distinct()->get(['user_id'])->count();
+
+        $data['chartdata'] = (CoursesUsers::join('courses', 'courses.id', '=', 'courses_users.course_id')->selectRaw('name,count(name) as total_enrollment, sum(cost) as revenue')->groupBy('name')->get());
+
+        $data['stats']['users'] = User::count();
+
+       $data['stats']['top_users_by_courses'] = CoursesUsers::join('users','users.id','=','courses_users.user_id')->join('courses','courses.id','=','courses_users.course_id')->selectRaw('users.name,users.id as user_id,users.profile_picture,count(course_id) as total_courses, sum(cost) as costs')->groupBy('name')->orderBy('total_courses','DESC')->take(5)->get()->toArray();
+
+       $data['stats']['awaiting_invoices'] = Invoice::join('users', 'users.id', '=', 'invoices.user_id')->select('invoices.id as invoice_id', 'invoice_ref', 'amount', 'invoices.status', 'date_approved', 'payment_status', 'date_paid', 'invoices.created_at', 'items')->addSelect('users.name', 'users.id as user_id', 'profile_picture')->where(['invoices.payment_status'=>1,'invoices.status'=>0])->latest()->paginate();
+
+       $data['stats']['activities'] = Activity::join('users', 'users.id', '=', 'activities.user_id')->select('name','user_id','actions','value','activities.created_at')->latest()->limit(10)->get();
+
+        return Inertia::render('Admin/Dashboard', $data);
+    }
     public function users(Request $request)
     {
         $data['users'] = User::select('name', 'id', 'email', 'status', 'profile_picture', 'login_at')->orderBy('name', 'asc')->withCount('courses')->paginate(10);
