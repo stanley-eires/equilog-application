@@ -59,7 +59,7 @@ class AuthenticatedSessionController extends Controller
             'status' => null
         ]);
         Activity::create([
-            'actions' => 'Login',
+            'actions' => 'login',
             'user_id' => Auth::id(),
             'value' => [
                 'platform' => $agent->platform() . ' ' . $agent->version($agent->platform()),

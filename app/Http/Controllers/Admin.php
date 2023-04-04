@@ -28,11 +28,11 @@ class Admin extends Controller
 
         $data['stats']['users'] = User::count();
 
-       $data['stats']['top_users_by_courses'] = CoursesUsers::join('users','users.id','=','courses_users.user_id')->join('courses','courses.id','=','courses_users.course_id')->selectRaw('users.name,users.id as user_id,users.profile_picture,count(course_id) as total_courses, sum(cost) as costs')->groupBy('name')->orderBy('total_courses','DESC')->take(5)->get()->toArray();
+        $data['stats']['top_users_by_courses'] = CoursesUsers::join('users', 'users.id', '=', 'courses_users.user_id')->join('courses', 'courses.id', '=', 'courses_users.course_id')->selectRaw('users.name,users.id as user_id,users.profile_picture,count(course_id) as total_courses, sum(cost) as costs')->groupBy('name')->orderBy('total_courses', 'DESC')->take(5)->get()->toArray();
 
-       $data['stats']['awaiting_invoices'] = Invoice::join('users', 'users.id', '=', 'invoices.user_id')->select('invoices.id as invoice_id', 'invoice_ref', 'amount', 'invoices.status', 'date_approved', 'payment_status', 'date_paid', 'invoices.created_at', 'items')->addSelect('users.name', 'users.id as user_id', 'profile_picture')->where(['invoices.payment_status'=>1,'invoices.status'=>0])->latest()->paginate();
+        $data['stats']['awaiting_invoices'] = Invoice::join('users', 'users.id', '=', 'invoices.user_id')->select('invoices.id as invoice_id', 'invoice_ref', 'amount', 'invoices.status', 'date_approved', 'payment_status', 'date_paid', 'invoices.created_at', 'items')->addSelect('users.name', 'users.id as user_id', 'profile_picture')->where(['invoices.payment_status' => 1, 'invoices.status' => 0])->latest()->paginate();
 
-       $data['stats']['activities'] = Activity::join('users', 'users.id', '=', 'activities.user_id')->select('name','user_id','actions','value','activities.created_at')->latest()->limit(10)->get();
+        $data['stats']['activities'] = Activity::join('users', 'users.id', '=', 'activities.user_id')->select('name', 'user_id', 'actions', 'value', 'activities.created_at')->latest()->limit(10)->get();
 
         return Inertia::render('Admin/Dashboard', $data);
     }
@@ -101,6 +101,14 @@ class Admin extends Controller
         }
 
         User::where('id', $id)->update($input);
+        Activity::create([
+            'actions' => 'user_actions',
+            'user_id' => Auth::id(),
+            'value' => [
+                'id' => $id,
+                'type' => 'edited'
+            ],
+        ]);
         return back()->with('message', [
             'title' => 'User Profile',
             'content' => "Changes Updated",
@@ -111,11 +119,31 @@ class Admin extends Controller
     public function usersActions(Request $request)
     {
         User::whereIn('id', $request->only('id')['id'])->update($request->except('id'));
+        foreach ($request->only('id')['id'] as $key) {
+            Activity::create([
+                'actions' => 'user_actions',
+                'user_id' => Auth::id(),
+                'value' => [
+                    'id' => $key,
+                    'type' => $request->input('status') == 0 ? 'blocked' : 'unblocked'
+                ],
+            ]);
+        }
         return back();
     }
     public function usersDelete(Request $request)
     {
         User::whereIn('id', $request->only('id')['id'])->delete();
+        foreach ($request->only('id')['id'] as $key) {
+            Activity::create([
+                'actions' => 'user_actions',
+                'user_id' => Auth::id(),
+                'value' => [
+                    'id' => $key,
+                    'type' => 'deleted'
+                ],
+            ]);
+        }
         return back();
     }
 
@@ -196,6 +224,16 @@ class Admin extends Controller
     public function courseActions(Request $request)
     {
         Course::whereIn('id', $request->only('id')['id'])->update($request->except('id'));
+        foreach ($request->only('id')['id'] as $key) {
+            Activity::create([
+                'actions' => 'course_actions',
+                'user_id' => Auth::id(),
+                'value' => [
+                    'id' => $key,
+                    'type' => $request->input('status') == 0 ? 'disabled' : 'enabled'
+                ],
+            ]);
+        }
         return back()->with('message', [
             'title' => "Course Actions",
             'content' => "Changes Updated Successfully",
@@ -205,6 +243,16 @@ class Admin extends Controller
     public function courseDelete(Request $request)
     {
         Course::whereIn('id', $request->only('id')['id'])->delete();
+        foreach ($request->only('id')['id'] as $key) {
+            Activity::create([
+                'actions' => 'course_actions',
+                'user_id' => Auth::id(),
+                'value' => [
+                    'id' => $key,
+                    'type' => 'deleted'
+                ],
+            ]);
+        }
         return back();
     }
 
@@ -222,6 +270,16 @@ class Admin extends Controller
     public function invoicesDelete(Request $request)
     {
         Invoice::whereIn('id', $request->only('id')['id'])->delete();
+        foreach ($request->only('id')['id'] as $key) {
+            Activity::create([
+                'actions' => 'invoice_actions',
+                'user_id' => Auth::id(),
+                'value' => [
+                    'id' => $key,
+                    'type' => 'deleted'
+                ],
+            ]);
+        }
         return back();
     }
     public function invoicesApprove(Request $request)
@@ -232,6 +290,15 @@ class Admin extends Controller
             'status' => 2,
             'date_approved' => date("M d, Y h:i A")
         ]);
+        Activity::create([
+            'actions' => 'invoice_actions',
+            'user_id' => Auth::id(),
+            'value' => [
+                'id' => $input['id'],
+                'type' => 'approved the payment of'
+            ],
+        ]);
+
         foreach ($input['items'] as $item) {
             CoursesUsers::create([
                 'course_id' => $item,
@@ -257,6 +324,14 @@ class Admin extends Controller
     public function invoicesDecline(Request $request)
     {
         Invoice::whereIn('id', $request->only('id')['id'])->update($request->except('id'));
+        Activity::create([
+            'actions' => 'invoice_actions',
+            'user_id' => Auth::id(),
+            'value' => [
+                'id' => $request->only('id')['id'],
+                'type' => 'declined the payment of'
+            ],
+        ]);
         $input = $request->all();
         $user = User::select('email', 'name')->find($input['user_id']);
         $content = "<h1>Dear {$user->name}</h1>

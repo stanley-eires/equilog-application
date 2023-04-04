@@ -8,8 +8,8 @@ import ProfilePicture from '@/Components/ProfilePicture.vue';
 import CounterUp from '@/Components/CounterUp.vue';
 import InvoicesList from '@/Components/InvoicesList.vue';
 
-const props = defineProps({ title: String, stats: Object, chartdata: Object });
-let state = ref({
+const props = defineProps( { title: String, stats: Object, chartdata: Object } );
+let state = ref( {
     options: {
         chart: {
             id: 'Sales-Analytics'
@@ -29,10 +29,10 @@ let state = ref({
             enabled: true,
             textAnchor: 'start',
             style: {
-                colors: ['#fff']
+                colors: [ '#fff' ]
             },
-            formatter: function (val, opt) {
-                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + formatCurrency(val)
+            formatter: function ( val, opt ) {
+                return opt.w.globals.labels[ opt.dataPointIndex ] + ":  " + formatCurrency( val )
             },
             offsetX: 0,
             dropShadow: {
@@ -41,10 +41,10 @@ let state = ref({
         },
         stroke: {
             width: 5,
-            colors: ['#fff']
+            colors: [ '#fff' ]
         },
         xaxis: {
-            categories: props.chartdata.map(e => `${e.name}  (${e.total_enrollment})`)
+            categories: props.chartdata.map( e => `${ e.name }  (${ e.total_enrollment })` )
         },
         yaxis: {
             labels: {
@@ -52,11 +52,11 @@ let state = ref({
             }
         },
     },
-    series: [{
+    series: [ {
         name: 'Revenue',
-        data: props.chartdata.map(e => e.revenue)
-    }]
-})
+        data: props.chartdata.map( e => e.revenue )
+    } ]
+} )
 
 </script>
 
@@ -97,8 +97,7 @@ let state = ref({
             <div class="col-xl-4">
                 <div class="card card-body alert-light">
                     <div class="text-center">
-                        <h1 class="text-primary display-5 fw-bolder "><counter-up
-                                        :number="stats.users"></counter-up></h1>
+                        <h1 class="text-primary display-5 fw-bolder "><counter-up :number="stats.users"></counter-up></h1>
                         <p class="text-muted mb-0">All Platform Users</p>
                     </div>
                 </div>
@@ -124,7 +123,8 @@ let state = ref({
                                         </td>
                                         <td class="fw-semibold text-end">{{ user.total_courses }} <span
                                                 class="d-none d-lg-inline">course{{ user.total_courses == 1 ?
-                                                    '' : 's' }}</span><br><span class="text-success">{{ formatCurrency(user.costs) }}</span></td>
+                                                    '' : 's' }}</span><br><span
+                                                class="text-success">{{ formatCurrency(user.costs) }}</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -145,19 +145,54 @@ let state = ref({
             </div>
             <div class="col-xl-3">
                 <div class="card card-body">
-                        <h4 class="card-title mb-4">Recent Activity</h4>
+                    <h4 class="card-title mb-4">Recent Activity</h4>
 
-                        <ol class="activity-feed mb-0 ps-1 small" data-simplebar style="max-height: 336px;overflow: auto;">
-                            <li v-for="(feed,index) in stats.activities" class="feed-item" :key="index">
-                                <div class="feed-item-list">
-                                    <small class="text-muted mb-1 font-size-13" :title="moment(feed.created_at).format('L hh:MM A')">{{ humanizeTime(feed.created_at) }}</small>
-                                    <p class="mt-0 mb-0" v-if="feed.actions == 'Login'"><Link :href="route('user.single', [feed.user_id, 'profile'])">{{ feed.name }} </Link> signed in with IP {{ feed.value.ip }} using {{ feed.value.browser }} browser on a {{ feed.value.desktop ? feed.value.platform+' PC':'Mobile Device' }}</p>
-                                </div>
-                            </li>
+                    <ol class="activity-feed mb-0 ps-1 small" data-simplebar style="max-height: 500px;overflow: auto;">
+                        <li v-for="(feed, index) in stats.activities" class="feed-item" :key="index">
+                            <div class="feed-item-list">
+                                <small class="text-muted mb-1 font-size-13"
+                                    :title="moment(feed.created_at).format('L hh:MM A')">{{ humanizeTime(feed.created_at) }}</small>
+                                <p class="mt-0 mb-0" v-if="feed.actions == 'login'">
+                                    <Link :href="route('user.single', [feed.user_id, 'profile'])">
+                                    {{ feed.user_id == $page.props.auth.user.id ? "You" : feed.name }} </Link> signed in
+                                    with
+                                    IP
+                                    {{ feed.value.ip }}
+                                    using
+                                    {{ feed.value.browser }} browser on a
+                                    {{ feed.value.desktop ? feed.value.platform + ' PC' : 'Mobile Device' }}
+                                </p>
+                                <p class="mt-0 mb-0" v-else-if="feed.actions == 'user_actions'">
+                                    <Link :href="route('user.single', [feed.user_id, 'profile'])">
+                                    {{ feed.user_id == $page.props.auth.user.id ? "You " : feed.name }} </Link>
+                                    <span class="mx-1"> {{ feed.value.type }} </span>
+                                    <Link :href="route('user.single', [feed.value.id, 'profile'])">
+                                    {{ feed.value.id == $page.props.auth.user.id ? " your profile " : (feed.value.id == feed.user_id ? ' his/her profile' : ' this user\'s profile') }}
+                                    </Link>
 
-                        </ol>
+                                </p>
+                                <p class="mt-0 mb-0" v-else-if="feed.actions == 'course_actions'">
+                                    <Link :href="route('user.single', [feed.user_id, 'profile'])">
+                                    {{ feed.user_id == $page.props.auth.user.id ? "You " : feed.name }} </Link>
+                                    <span>{{ feed.value.type }} </span>
+                                    <Link :href="route('course.single', [feed.value.id, 'overview'])"> this course
+                                    </Link>
+                                </p>
+                                <p class="mt-0 mb-0" v-else-if="feed.actions == 'invoice_actions'">
+                                    <Link :href="route('user.single', [feed.user_id, 'profile'])">
+                                    {{ feed.user_id == $page.props.auth.user.id ? "You " : feed.name }} </Link>
+                                    <span>{{ feed.value.type }} </span>
+                                    <Link :href="route('invoice', [feed.value.id])"> this invoice
+                                    </Link>
+                                </p>
+                                <p class="mt-0 mb-0" v-else>Some unknown action was performed</p>
+                            </div>
+                        </li>
+
+                    </ol>
 
                 </div>
             </div>
         </div>
-</AuthenticatedLayout></template>
+    </AuthenticatedLayout>
+</template>

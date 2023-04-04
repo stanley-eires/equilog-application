@@ -105,6 +105,14 @@ class MyAccount extends Controller
         }
         Transaction::create($entry);
         Invoice::where('id', $entry['invoice_id'])->update(['payment_status' => 1, 'date_paid' => date("M d, Y h:i A")]);
+        Activity::create([
+            'actions' => 'invoice_actions',
+            'user_id' => Auth::id(),
+            'value' => [
+                'id' => $entry['invoice_id'],
+                'type' => ' made payment and uploaded evidence of payment about'
+            ],
+        ]);
         $user = $request->user();
         $invoice_link = route('invoice', [$entry['invoice_id']]);
         $content = "<h1>Dear {$user['name']}</h1>

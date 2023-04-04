@@ -33,7 +33,9 @@ let state = ref( {
                                     :preserve-state="false" class="btn btn-light btn-sm me-1 mb-1"><i
                                     class="fa fa-undo me-1 text-primary"></i>
                                 Unblock</Link>
-                                <Link :href="route('users.delete')" :data="{ id: state.id }" method="delete"
+                                <Link
+                                    onclick="return confirm('Are you sure you want to delete this user(s)? This action is irreversible')"
+                                    :href="route('users.delete')" :data="{ id: state.id }" method="delete"
                                     :preserve-state="false" class="btn btn-outline-danger btn-sm mb-1 me-1"><i
                                     class="fa fa-trash me-1"></i>
                                 Delete</Link>

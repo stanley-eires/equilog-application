@@ -29,7 +29,9 @@ let id = ref( [] )
                             :preserve-state="false" class="btn btn-light btn-sm me-1 mb-1"><i
                             class="fa fa-times me-1 text-danger"></i>
                         Disable</Link>
-                        <Link :href="route('course.delete')" :data="{ id: id }" method="delete" :preserve-state="false"
+                        <Link
+                            onclick="return confirm('Are you sure you want to delete this course(s)? This action is irreversible')"
+                            :href="route('course.delete')" :data="{ id: id }" method="delete" :preserve-state="false"
                             class="btn btn-outline-danger btn-sm mb-1"><i class="fa fa-trash me-1"></i>
                         Delete</Link>
                     </div>

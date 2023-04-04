@@ -59,7 +59,7 @@ class User extends Authenticatable
         DB::table('users')->truncate();
         $faker = \Faker\Factory::create();
         $fixed_date = strtotime('10 years ago');
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $user['name'] = $faker->name;
             $user['email'] = $faker->email;
             $user['password'] = Hash::make('password');
