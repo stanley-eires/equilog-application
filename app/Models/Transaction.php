@@ -12,6 +12,9 @@ class Transaction extends Model
     protected $fillable = [
         'amount', 'transaction_gateway', 'invoice_id', 'status', 'meta',
     ];
+    protected $attributes = [
+        'meta' => '[]',
+    ];
     protected $casts = [
         'meta' => 'array',
     ];

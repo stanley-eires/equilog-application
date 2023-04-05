@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids, SoftDeletes;
 
@@ -33,6 +35,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $attributes = [
+        'next_of_kin' =>  '{"name":null, "relationship":null, "email": null, "phone":null}',
+        'work_experience' =>  '{"title":null, "employer":null, "location": null, "date":null}',
+        'education' =>  '{"degree":null, "institution":null, "location": null, "date":null}',
+        'medicals' =>  '{"genotype":null, "bloodgroup":null, "rhd": null, "phone":null, "weight": null, "hearing":null, "vision": null, "hiv":null, "covid":null, "meningitis":null, "tuberculosis":null,"certificate":null}',
+        'roles' =>  '{"admin":null, "subscriber":true, "coordinator": null}',
     ];
 
     /**
@@ -74,6 +84,7 @@ class User extends Authenticatable
                 $user['login_at'] = date("M d, Y h:i A", mt_rand($fixed_date, time()));
             }
             $user['summary'] = $faker->realText();
+            $user['email_verified_at'] = date("");
             $user['next_of_kin'] = [
                 'name' => $faker->name,
                 'email' => $faker->email,
@@ -110,7 +121,8 @@ class User extends Authenticatable
                 'hiv' => $faker->randomElement(['Positive', 'Negative']),
                 'covid' => $faker->randomElement(['Positive', 'Negative']),
                 'meningitis' => $faker->randomElement(['Positive', 'Negative']),
-                'tuberculosis' => $faker->randomElement(['Positive', 'Negative'])
+                'tuberculosis' => $faker->randomElement(['Positive', 'Negative']),
+                'certificate' => null
             ];
 
             self::create($user);

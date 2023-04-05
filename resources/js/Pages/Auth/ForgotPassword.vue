@@ -36,9 +36,6 @@ const submit = () => {
                             link that will allow you to choose a new one.</p>
                     </div>
                     <div class="p-2 mt-4">
-                        <div v-if="$page.props.flash.message.content" class="alert alert-success mb-3" role="alert">
-                            {{ $page.props.flash.message.content }}
-                        </div>
                         <form @submit.prevent="submit">
                             <div class="form-floating mb-3">
                                 <input autofocus type="email" class="form-control"

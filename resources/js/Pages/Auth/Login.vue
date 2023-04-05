@@ -1,6 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 defineProps( {

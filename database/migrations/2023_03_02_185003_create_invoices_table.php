@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->string('invoice_ref');
-            $table->json('items')->default(new Expression('(JSON_ARRAY())'));
+            $table->json('items');
             $table->string('amount')->nullable();
             $table->string('payment_status')->nullable();
             $table->string('date_paid')->nullable();

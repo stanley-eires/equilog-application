@@ -16,7 +16,9 @@ class Course extends Model
     protected $fillable = [
         'name', 'summary', 'description', 'status', 'program', 'cost', 'discounted_cost', 'duration', 'learning_methods', 'date_of_commencement', 'banner', 'user_id', 'slug'
     ];
-
+    protected $attributes = [
+        'learning_methods' => '{"virtual":true, "inclass": true}',
+    ];
     protected $casts = [
         'learning_methods' => 'array',
     ];

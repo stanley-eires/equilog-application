@@ -94,8 +94,26 @@ const toggleSidebar = () => {
                 </div>
             </div>
         </div>
+
         <div class="main-content">
             <div class="page-content">
+                <div class="alert border-warning alert-warning" role="alert"
+                    v-if="!$page.props.auth.user.email_verified_at">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fa fa-exclamation-circle fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <strong class="mt-0">Pending Email Verification</strong>
+                            <p class="mb-0">You are yet to verify your email address. Some functionalities might not be
+                                available to
+                                you until you verify. Please check the email sent to you or
+                                <Link class="alert-link text-decoration-underline" :href="route('verification.notice')">
+                                click here</Link>
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div class="container-fluid">
                     <div class="row d-print-none" v-if="breadcrumbs">
                         <div class="col-12">

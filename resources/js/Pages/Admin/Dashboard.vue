@@ -71,12 +71,12 @@ let state = ref( {
                         <ul class="list-inline main-chart mb-0">
                             <li class="list-inline-item chart-border-left me-0 border-0">
                                 <h3 class="text-primary"><counter-up
-                                        :number="formatCurrency(chartdata.map(e => e.revenue).reduce((x, y) => x + y, 0))"></counter-up><span
+                                        :number="formatCurrency(chartdata.map(e => e.revenue).reduce((x, y) => Number(x) + Number(y), 0))"></counter-up><span
                                         class="text-muted d-inline-block font-size-15 ms-3">Income</span></h3>
                             </li>
                             <li class="list-inline-item chart-border-left me-0">
                                 <h4><counter-up
-                                        :number="(chartdata.map(e => e.total_enrollment).reduce((x, y) => x + y, 0))"></counter-up><span
+                                        :number="(chartdata.map(e => e.total_enrollment).reduce((x, y) => Number(x) + Number(y), 0))"></counter-up><span
                                         class="text-muted d-inline-block font-size-15 ms-3">Sales</span>
                                 </h4>
                             </li>

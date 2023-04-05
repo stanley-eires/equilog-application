@@ -12,7 +12,9 @@ class Invoice extends Model
     protected $fillable = [
         'user_id', 'invoice_ref', 'items', 'status', 'date_approved', 'handler', 'amount', 'payment_status', 'date_paid'
     ];
-
+    protected $attributes = [
+        'items' => '[]',
+    ];
     protected $casts = [
         'items' => 'array',
     ];

@@ -46,7 +46,7 @@ class Admin extends Controller
     {
         $user = User::select('id', 'profile_picture', 'name', 'email', 'gender', 'marital_status', 'phone', 'date_of_birth', 'address');
         if ($segment == 'profile') {
-            $user = $user->addSelect('summary', 'work_experience', 'education', 'medicals');
+            $user = $user->addSelect('summary', 'work_experience', 'education', 'medicals', 'next_of_kin');
             $data['user'] = $user->where('id', $id)->findOrFail($id);
             $data['title'] = "{$data['user']->name} - Profile";
         } elseif ($segment == 'courses') {
@@ -98,6 +98,9 @@ class Admin extends Controller
         $input = $request->except('_method');
         if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
             $input['profile_picture'] = $request->file('profile_picture')->storeAs(date('Y'), $request->file('profile_picture')->getClientOriginalName(), 'public');
+        }
+        if ($request->hasFile('medicals.certificate') && $request->file('medicals.certificate')->isValid()) {
+            $input['medicals']['certificate'] = $request->file('medicals.certificate')->storeAs(date('Y'), $request->file('medicals.certificate')->getClientOriginalName(), 'public');
         }
 
         User::where('id', $id)->update($input);

@@ -2,14 +2,18 @@
 import Index from '@/Pages/Admin/User/Index.vue';
 import { Link } from '@inertiajs/vue3';
 import moment from 'moment';
+import { ref } from 'vue';
 
 
 
 defineProps( { title: String, user: Object } );
+let currentTab = ref( 'medicals' );
 
 let properDates = ( date ) => {
-    let [ prefix, suffix ] = date.split( ' - ' ).map( e => e.trim() )
-    return `${ moment( prefix ).format( 'MMMM, YYYY' ) } - ${ suffix.toLowerCase() === "current" ? 'Current' : moment( suffix ).format( 'MMMM, YYYY' ) }`;
+    let [ prefix, suffix ] = date ? date.split( ' - ' ).map( e => e.trim() ) : [];
+    if ( prefix ) {
+        return `${ moment( prefix ).format( 'MMMM, YYYY' ) } - ${ suffix.toLowerCase() === "current" ? 'Current' : moment( suffix ).format( 'MMMM, YYYY' ) }`;
+    }
 }
 
 </script>
@@ -52,58 +56,93 @@ let properDates = ( date ) => {
             </div>
             <div class="col-md-4">
                 <div class="card card-body">
-                    <h4>Medicals</h4>
-                    <table class='table table-sm table-centered'>
-                        <tbody>
-                            <tr>
-                                <th>Genotype</th>
-                                <td>{{ user.medicals.genotype }}</td>
-                            </tr>
-                            <tr>
-                                <th>Blood Group</th>
-                                <td>{{ user.medicals.bloodgroup }}<small class="ms-1">({{ user.medicals.rhd }})</small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Height</th>
-                                <td>{{ user.medicals.height }}</td>
-                            </tr>
-                            <tr>
-                                <th>Weight</th>
-                                <td>{{ user.medicals.weight }}</td>
-                            </tr>
-                            <tr>
-                                <th>Eye Sight</th>
-                                <td>{{ user.medicals.vision }}</td>
-                            </tr>
-                            <tr>
-                                <th>Hearing Clear</th>
-                                <td>{{ user.medicals.hearing }}</td>
-                            </tr>
-                            <tr>
-                                <th>HIV I&II </th>
-                                <td>{{ user.medicals.hiv }}</td>
-                            </tr>
-                            <tr>
-                                <th>COVID 19</th>
-                                <td>{{ user.medicals.covid }}</td>
-                            </tr>
-                            <tr>
-                                <th>Cerebrospinal meningitis</th>
-                                <td>{{ user.medicals.meningitis }}</td>
-                            </tr>
-                            <tr>
-                                <th>Serum Tuberculosis</th>
-                                <td>{{ user.medicals.tuberculosis }}</td>
-                            </tr>
+                    <ul class="nav nav-tabs  text-uppercase mb-3 small">
+                        <li class="nav-item">
+                            <button class="nav-link bg-transparent" :class="{ 'active': currentTab == 'medicals' }"
+                                @click.prevent="currentTab = 'medicals'">Medicals</button>
+                        </li>
+                        <li class="nav-item">
+                            <button @click.prevent="currentTab = 'kin'" class="nav-link bg-transparent"
+                                :class="{ 'active': currentTab != 'medicals' }" href="#">Next
+                                Of Kin</button>
+                        </li>
+                    </ul>
+                    <div v-if="currentTab == 'medicals'">
+                        <table class='table table-sm table-centered'>
+                            <tbody>
+                                <tr>
+                                    <th>Genotype</th>
+                                    <td>{{ user.medicals.genotype }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Blood Group</th>
+                                    <td>{{ user.medicals.bloodgroup }}<small class="ms-1">({{ user.medicals.rhd }})</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Height</th>
+                                    <td>{{ user.medicals.height }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>{{ user.medicals.weight }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Eye Sight</th>
+                                    <td>{{ user.medicals.vision }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Hearing Clear</th>
+                                    <td>{{ user.medicals.hearing }}</td>
+                                </tr>
+                                <tr>
+                                    <th>HIV I&II </th>
+                                    <td>{{ user.medicals.hiv }}</td>
+                                </tr>
+                                <tr>
+                                    <th>COVID 19</th>
+                                    <td>{{ user.medicals.covid }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cerebrospinal meningitis</th>
+                                    <td>{{ user.medicals.meningitis }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Serum Tuberculosis</th>
+                                    <td>{{ user.medicals.tuberculosis }}</td>
+                                </tr>
 
-                            <tr>
-                                <th>Allergies</th>
-                                <td>None</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="btn btn-dark">View Medical Report</button>
+                                <tr>
+                                    <th>Allergies</th>
+                                    <td>None</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a target="_blank" :href="`/storage/${user.medicals.certificate}`" v-if="user.medicals.certificate"
+                            class="btn btn-dark">View Medical Report</a>
+                    </div>
+                    <div v-else>
+                        <table class='table table-centered'>
+                            <tbody>
+                                <tr>
+                                    <th>Fullname</th>
+                                    <td>{{ user.next_of_kin.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Relationship</th>
+                                    <td>{{ user.next_of_kin.relationship }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{ user.next_of_kin.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number</th>
+                                    <td>{{ user.next_of_kin.phone }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

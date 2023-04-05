@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('cost');
             $table->string('discounted_cost')->nullable();
             $table->string('duration');
-            $table->json('learning_methods')->default(json_encode(['virtual' => true, 'inclass' => true]));
+            $table->json('learning_methods');
             $table->string('banner')->nullable();
             $table->string('date_of_commencement')->nullable();
             $table->uuid('user_id')->nullable();

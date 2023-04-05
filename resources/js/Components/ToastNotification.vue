@@ -20,8 +20,8 @@ onMounted( () => {
 <template>
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 100000">
         <div class="toast-container">
-            <div ref="toastele" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false"
-                data-bs-delay="10000">
+            <div ref="toastele" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true"
+                data-bs-delay="60000">
                 <div class="toast-header" :class="`bg-${status ?? 'white'} ${status ? 'text-white' : 'text-dark'}`">
                     <strong class="me-auto">{{ title }}</strong>
                     <small v-if="time">{{ moment(time).fromNow() }}</small>

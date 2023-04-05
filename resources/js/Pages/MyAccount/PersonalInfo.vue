@@ -4,9 +4,11 @@ import { Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import StartAndEndDate from '@/Components/StartAndEndDate.vue';
+import moment from 'moment';
 
 const props = defineProps( { title: String, user: Object } );
-const form = useForm( props.user );
+
+const form = useForm( { ...props.user, _method: 'put' } );
 const currentTab = ref( 0 );
 </script>
 
@@ -80,7 +82,8 @@ const currentTab = ref( 0 );
                                     <div class="col-md-4">
                                         <div class="form-floating mb-3">
                                             <input type="date" required class="form-control" placeholder="Date Of Birth"
-                                                v-model="form.date_of_birth">
+                                                v-model="form.date_of_birth"
+                                                :max="moment().subtract(12, 'years').format('YYYY-MM-DD')">
                                             <label>Date Of Birth *</label>
                                         </div>
                                     </div>
@@ -254,7 +257,7 @@ const currentTab = ref( 0 );
                     </div>
                 </form>
                 <form v-else-if="currentTab == 2" class="card card-body"
-                    @submit.prevent="form.put(route('user.update', [user.id], { preserveScroll: true }))">
+                    @submit.prevent="form.post(route('user.update', [user.id], { preserveScroll: true }))">
                     <h4>Medical Fitness</h4>
                     <div class="row">
                         <div class="col-md-4">
@@ -368,9 +371,24 @@ const currentTab = ref( 0 );
                                 <label>Allergies </label>
                             </div>
                         </div>
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-md-12" v-if="form.medicals.certificate">
+                            <div class="d-flex border border-primary alert-primary rounded mb-3 card-body">
+                                <i class="fa fa-file fa-2x me-3"></i>
+                                <div class="media-body">
+                                    <a class="mb-0 d-block" target="_blank"
+                                        :href="`/storage/${form.medicals.certificate}`">Certificate Of Medical
+                                        Report</a>
+                                    <button @click.prevent="form.medicals.certificate = null"
+                                        class="btn px-0 btn-sm text-decoration-underline btn-link "><i
+                                            class="fa fa-times-circle me-1"></i>
+                                        Remove Certificate</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12" v-else>
                             <div class="form-floating mb-3">
-                                <input type="file" class="form-control">
+                                <input type="file" class="form-control" name="certificate" accept=".pdf"
+                                    @change="form.medicals.certificate = $event.target.files[0]">
                                 <label class="pb-5 d-inline-block">Certicate of Medical Report</label>
                             </div>
                         </div>

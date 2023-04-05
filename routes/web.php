@@ -32,7 +32,7 @@ require __DIR__ . '/auth.php';
 
 Route::prefix('myaccount')->group(
     function () {
-        Route::middleware('auth')->group(function () {
+        Route::middleware(['auth'])->group(function () {
             Route::get('overview', [MyAccount::class, 'overview'])->name('myaccount.overview');
             Route::get('personal-info', [MyAccount::class, 'personalInfo'])->name('myaccount.personal-info');
             Route::get('security', [MyAccount::class, 'security'])->name('myaccount.security');
@@ -83,12 +83,11 @@ Your username and password will be resent to your email.
 The internet login URL is https://internetlogin.cu.edu.ng/portal?
 For any need of support, kindly mail csis.support@covenantuniversity.edu.ng
 Thank you";
-        return (new Email($subject, $content))->render();
         Mail::to('stanley@example.com')->send(new Email($subject, $content));
     })->name('seedings.testmail');
 });
 
 Route::get('', [PublicController::class, 'index'])->name('public.home');
 Route::get('course/{slug}', [PublicController::class, 'course'])->name('public.course.single');
-Route::get('/invoice/{invoice}', [MyAccount::class, 'invoice'])->name('invoice')->middleware('auth');
-Route::delete('/invoice', [MyAccount::class, 'invoiceRemoveItem'])->name('invoice.remove-item')->middleware('auth');
+Route::get('/invoice/{invoice}', [MyAccount::class, 'invoice'])->name('invoice')->middleware(['auth', 'verified']);
+Route::delete('/invoice', [MyAccount::class, 'invoiceRemoveItem'])->name('invoice.remove-item')->middleware(['auth', 'verified']);

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('transaction_gateway');
             $table->boolean('status')->default(0);
             $table->uuid('invoice_id');
-            $table->json('meta')->default(new Expression('(JSON_ARRAY())'));
+            $table->json('meta');
             $table->timestamps();
         });
         \App\Models\CoursesUsers::seedCourseUsers();
