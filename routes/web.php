@@ -70,6 +70,11 @@ Route::prefix('admin')->group(
         Route::delete('/invoices', [Admin::class, 'invoicesDelete'])->name('admin.invoices.delete')->middleware('auth');
         Route::post('/invoices', [Admin::class, 'invoicesApprove'])->name('admin.invoices.approve')->middleware('auth');
         Route::put('/invoices', [Admin::class, 'invoicesDecline'])->name('admin.invoices.decline')->middleware('auth');
+
+        Route::get('/site-settings', [Admin::class, 'siteSettings'])->name('admin.site-settings')->middleware('auth');
+        Route::post('/site-settings/{key}', [Admin::class, 'saveSiteSettings'])->name('admin.site-settings.save')->middleware('auth');
+
+        Route::post('/maintenance-functions', [Admin::class, 'maintenanceFunctions'])->name('admin.maintenance-functions')->middleware('auth');
     }
 );
 

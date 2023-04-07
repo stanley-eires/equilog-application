@@ -7,9 +7,11 @@ use App\Models\Activity;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
+use App\Models\SiteOptions;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -344,6 +346,45 @@ class Admin extends Controller
             'title' => 'Invoice Status',
             'content' => "You declined invoice payment",
             'status' => 'warning'
+        ]);
+    }
+
+    public function siteSettings(Request $request)
+    {
+        $data['title'] = "Site Settings";
+        $data['settings'] = SiteOptions::select('key', 'value', 'updated_at')->get();
+        //dd($data['settings']->toArray());
+        return Inertia::render("Admin/Settings", $data);
+    }
+    public function saveSiteSettings(Request $request, $key)
+    {
+        if (SiteOptions::updateOrCreate(['key' => $key], ['value' => $request->post()])) {
+            cache()->forget("option_{$key}");
+        }
+        return back()->with('message', [
+            'title' => 'Option Settings Saved',
+            'content' => "The <strong>$key</strong> Settings has been updated successfully",
+            'status' => 'success'
+        ]);
+    }
+    public function maintenanceFunctions(Request $request)
+    {
+        $type = $request->type;
+        $content = null;
+        if ($type == 'clear_cache') {
+            $exitCode = Artisan::call("cache:clear");
+            $content = "Site cache has been cleared. You might encounter initial slow loading on some page";
+        } elseif ($type == 'clear_activities_log') {
+            Activity::truncate();
+            $content = "All activity logs has been cleared";
+        } elseif ($type == 'create_symlink') {
+            $exitCode = Artisan::call("storage:link");
+            $content = "Symlink created";
+        }
+        return back()->with('message', [
+            'title' => 'Maintenance Functions',
+            'content' => $content,
+            'status' => 'success',
         ]);
     }
 }

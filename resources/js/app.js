@@ -22,7 +22,7 @@ createInertiaApp( {
             .use( ZiggyVue, Ziggy )
             .use( VueApexCharts )
             .use( vue3GoogleLogin, {
-                clientId: '888479091012-0sfqr1n21hq3odmu1t277i4v349ghm8b.apps.googleusercontent.com'
+                clientId: props.auth_config?.google_client_id
             } )
             .mount( el );
     },

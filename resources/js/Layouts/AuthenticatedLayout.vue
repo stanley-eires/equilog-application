@@ -27,6 +27,7 @@ const menus = {
         // { name: 'Cohorts', icon: 'fa-users', href: "myaccount.personal-info", component: '' },
         { name: 'Courses', icon: 'fa-book', href: "admin.courses", active: [ 'Admin/Courses/Courses', 'Admin/Courses/Overview', 'Admin/Courses/Enrollments', 'Admin/Courses/Modify' ].includes( usePage().component ) },
         { name: 'Payment', icon: 'fa-credit-card', href: "admin.invoices", active: [ 'MyAccount/Invoices', 'MyAccount/Invoice' ].includes( usePage().component ) },
+        { name: 'Site Settings', icon: 'fa fa-wrench', href: "admin.site-settings", active: [ 'Admin/Settings' ].includes( usePage().component ) },
     ]
 }
 const toggleSidebar = () => {
@@ -54,7 +55,6 @@ const toggleSidebar = () => {
                     <a href="/" class="d-md-none">
                         <img src="/assets/img/equilog_logo.png" alt="" style="width:100px">
                     </a>
-                    <!-- App Search-->
                     <form class="app-search d-none d-lg-block">
                         <div class="position-relative">
                             <input type="text" class="form-control">

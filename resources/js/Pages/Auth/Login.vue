@@ -5,7 +5,7 @@ import { decodeCredential } from 'vue3-google-login'
 
 defineProps( {
     canResetPassword: Boolean,
-    status: String,
+    status: String
 } );
 
 const form = useForm( {
@@ -78,12 +78,13 @@ const handleLogin = ( response ) => {
                                     :disabled="form.processing"><span v-if="form.processing"
                                         class="spinner-border spinner-border-sm me-2"></span>Sign In</button>
                             </div>
-                            <div class="my-4 text-center">
+                            <div class="my-4 text-center" v-if="$page.props.auth_config?.allow_manual_registration">
                                 <p class="mb-0">Don't have an account ?
                                     <Link :href="route('register')" class="fw-medium text-primary">Register</Link>
                                 </p>
                             </div>
-                            <GoogleLogin prompt auto-login :callback="handleLogin"
+                            <GoogleLogin v-if="$page.props.auth_config?.allow_google_sso" prompt auto-login
+                                :callback="handleLogin" :client-id="$page.props.auth_config?.google_client_id"
                                 :buttonConfig="{ size: 'xlarge', text: 'continue_with', width: '400px' }" />
                         </form>
                     </div>

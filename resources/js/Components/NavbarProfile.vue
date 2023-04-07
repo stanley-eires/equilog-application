@@ -42,8 +42,9 @@
         </div>
     </template>
     <div v-else>
-        <Link :href="route('login')" class="btn btn-link">Login</Link>
-        <Link :href="route('register')" class="btn btn-primary">Join for Free</Link>
+        <Link :href="route('login')" class="btn btn-primary">Login</Link>
+        <Link v-if="$page.props.auth_config?.allow_manual_registration" :href="route('register')" class="btn btn-link ">
+        Join for Free</Link>
     </div>
 </template>
 

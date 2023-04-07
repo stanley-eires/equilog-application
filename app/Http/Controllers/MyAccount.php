@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
+use App\Models\SiteOptions;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,12 +53,13 @@ class MyAccount extends Controller
     }
     public function invoice(Request $request, $invoice)
     {
-
         $data['invoice'] = Invoice::join('users', 'users.id', '=', 'invoices.user_id')->select('invoice_ref', 'items', 'invoices.status', 'amount', 'invoices.created_at', 'users.name', 'payment_status', 'invoices.id', 'users.id as user_id')->findOrFail($invoice);
 
         $data['invoice']->transactions = Transaction::select('created_at', 'transaction_gateway', 'id', 'status', 'amount', 'meta')->where('invoice_id', $invoice)->get();
 
         $data['title'] = "#{$data['invoice']->invoice_ref} | (NGN " . number_format($data['invoice']->amount) . ")";
+
+        $data['payment_config'] = SiteOptions::getOption('payment');
 
         return Inertia::render('MyAccount/Invoice', $data);
     }
@@ -137,6 +139,8 @@ class MyAccount extends Controller
     public function handlePaystackPayment(Request $request)
     {
         $curl = curl_init();
+        $payment_opt = SiteOptions::getOption('payment');
+        $sk = $payment_opt['paystack']['live'] ? $payment_opt['paystack']['sk_live'] : $payment_opt['paystack']['sk_test'];
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://api.paystack.co/transaction/verify/{$request->reference}",
             CURLOPT_RETURNTRANSFER => true,
@@ -146,7 +150,7 @@ class MyAccount extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
-                "Authorization: Bearer sk_test_1c22c679496097ff2a4eaffc8cd24c95ff27bab1",
+                "Authorization: Bearer {$sk}",
                 "Cache-Control: no-cache",
             ),
         ));
