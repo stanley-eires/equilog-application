@@ -24,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'date_of_birth', 'gender', 'marital_status', 'status', 'address', 'login_at', 'summary', 'work_experience', 'education', 'medicals', 'nin', 'next_of_kin', 'roles', 'profile_picture'
+        'name', 'email', 'password', 'phone', 'date_of_birth', 'gender', 'marital_status', 'status', 'address', 'login_at', 'summary', 'work_experience', 'education', 'medicals', 'nin', 'next_of_kin', 'roles', 'profile_picture', 'email_verified_at'
     ];
 
     /**
@@ -82,6 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $user['status'] = mt_rand(0, 10) != 0;
             if (mt_rand(0, 2) == 1) {
                 $user['login_at'] = date("M d, Y h:i A", mt_rand($fixed_date, time()));
+                $user['email_verified_at'] = date("M d, Y h:i A", mt_rand($fixed_date, time()));
             }
             $user['summary'] = $faker->realText();
             $user['email_verified_at'] = date("");

@@ -40,6 +40,7 @@ Route::prefix('myaccount')->group(
             Route::get('courses', [MyAccount::class, 'courses'])->name('myaccount.courses');
             Route::post('create-invoice', [MyAccount::class, 'createInvoice'])->name('myaccount.invoice.create');
             Route::post('upload-evidence', [MyAccount::class, 'evidenceUpload'])->name('myaccount.invoice.upload-evidence');
+            Route::post('payment-via-paystack', [MyAccount::class, 'handlePaystackPayment'])->name('myaccount.invoice.payment-via-paystack');
         });
     }
 );

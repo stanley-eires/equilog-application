@@ -27,6 +27,10 @@
         "bootstrap": "^5.2.3",
         "counterup2": "^2.0.2",
         "moment": "^2.29.4",
-        "vue3-apexcharts": "^1.4.1"
+        "nanoid": "^4.0.2",
+        "vue-paystack": "^2.0.4",
+        "vue3-apexcharts": "^1.4.1",
+        "vue3-google-login": "^2.0.15",
+        "vue3-paystack": "^0.0.5"
     }
 }

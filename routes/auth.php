@@ -20,6 +20,8 @@ Route::prefix('accounts')->group(
                     return to_route('login');
                 });
 
+
+
                 Route::get('register', [RegisteredUserController::class, 'create'])
                     ->name('register');
 
@@ -29,6 +31,8 @@ Route::prefix('accounts')->group(
                     ->name('login');
 
                 Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+                Route::post('login-with-social', [AuthenticatedSessionController::class, 'socialLogin'])->name('social-login');
 
                 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
                     ->name('password.request');

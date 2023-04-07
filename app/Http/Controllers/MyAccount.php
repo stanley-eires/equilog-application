@@ -90,7 +90,7 @@ class MyAccount extends Controller
                 'user_id' => Auth::id(),
                 'invoice_ref' => date('Ymd') . mt_rand(100, 999),
                 'items' => array($item),
-                'amount' => $course->cost,
+                'amount' => $course->discounted_cost ?? $course->cost
             ]);
             return to_route('invoice', $id);
         }
@@ -132,5 +132,78 @@ class MyAccount extends Controller
             'content' => "Your payment evidence file has been uploaded",
             'status' => 'success'
         ]);
+    }
+
+    public function handlePaystackPayment(Request $request)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.paystack.co/transaction/verify/{$request->reference}",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer sk_test_1c22c679496097ff2a4eaffc8cd24c95ff27bab1",
+                "Cache-Control: no-cache",
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+        if ($err) {
+            return back()->with('message', [
+                'title' => "Transaction Unsuccessful", 'content' => $err, 'status' => 'danger'
+            ]);
+        } else {
+            $response = json_decode($response);
+            if (!$response->status || $response->data->status !== 'success') {
+                Transaction::create(['amount' => ($response->data->amount / 100), 'transaction_gateway' => "Paystack", 'status' => 0, 'meta' => $response->data, 'invoice_id' => $request->invoice]);
+                return back()->with('message', [
+                    'title' => "Transaction Unsuccessful", 'content' => $response->message, 'status' => 'danger'
+                ]);
+            } else {
+                $invoice = Invoice::select('id', 'amount', 'payment_status', 'date_paid', 'items')->where('id', $request->invoice)->first();
+                if ($invoice->payment_status == 1) {
+                    Transaction::create(['amount' => ($response->data->amount / 100), 'transaction_gateway' => "Paystack", 'status' => 0, 'meta' => $response->data, 'invoice_id' => $invoice->id]);
+                    return back()->with('message', [
+                        'title' => "Transaction unsuccessful", 'content' => "You have already paid for this invoice on {$invoice->date_paid}", 'status' => 'danger'
+                    ]);
+                } elseif ($invoice->amount != ($response->data->amount / 100)) {
+                    Transaction::create(['amount' => ($response->data->amount / 100), 'transaction_gateway' => "Paystack", 'status' => 0, 'meta' => $response->data, 'invoice_id' => $invoice->id]);
+                    return back()->with('message', [
+                        'title' => "Transaction unsuccessful", 'content' => "You did not pay the correct amount. You were supposed to pay NGN " . number_format($invoice->amount) .
+                            " but paid NGN " . number_format(($response->data->amount / 100)), 'status' => 'danger'
+                    ]);
+                } else {
+                    Transaction::create(['amount' => ($response->data->amount / 100), 'transaction_gateway' => "Paystack", 'status' => 1, 'meta' => $response->data, 'invoice_id' => $invoice->id]);
+                    Invoice::where('id', $invoice->id)->update(['payment_status' => 1, 'date_paid' => date("M d, Y h:i A"), 'status' => 2, 'date_approved' => date("M d, Y h:i A")]);
+                    Activity::create([
+                        'actions' => 'invoice_actions',
+                        'user_id' => Auth::id(),
+                        'value' => [
+                            'id' => $invoice->id,
+                            'type' => ' made full payment on'
+                        ],
+                    ]);
+                    foreach ($invoice->items as $item) {
+                        CoursesUsers::create([
+                            'course_id' => $item['id'],
+                            'user_id' => Auth::id(),
+                            'invoice_id' => $invoice->id,
+                            'date_completed' =>  null
+                        ]);
+                    }
+                    return back()->with('message', [
+                        'title' => "Transaction Successful", 'content' => "Thank you for purchasing a course(s) with us", 'status' => 'success'
+                    ]);
+                }
+            }
+            return back();
+        }
     }
 }

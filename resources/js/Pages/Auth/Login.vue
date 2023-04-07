@@ -1,6 +1,7 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { decodeCredential } from 'vue3-google-login'
 
 defineProps( {
     canResetPassword: Boolean,
@@ -18,6 +19,13 @@ const submit = () => {
         onFinish: () => form.reset( 'password' ),
     } );
 };
+const handleLogin = ( response ) => {
+    const userData = decodeCredential( response.credential )
+    useForm( {
+        email: userData.email,
+        name: userData.name
+    } ).post( route( 'social-login' ) )
+}
 </script>
 
 <template>
@@ -70,19 +78,16 @@ const submit = () => {
                                     :disabled="form.processing"><span v-if="form.processing"
                                         class="spinner-border spinner-border-sm me-2"></span>Sign In</button>
                             </div>
-                            <div class="mt-4 text-center">
+                            <div class="my-4 text-center">
                                 <p class="mb-0">Don't have an account ?
                                     <Link :href="route('register')" class="fw-medium text-primary">Register</Link>
                                 </p>
                             </div>
+                            <GoogleLogin prompt auto-login :callback="handleLogin"
+                                :buttonConfig="{ size: 'xlarge', text: 'continue_with', width: '400px' }" />
                         </form>
                     </div>
                 </div>
-                <button disabled class="btn btn-white card w-100 card-body">
-                    <span class=" mb-0 d-flex text-dark align-items-center fw-bold">
-                        <i class="fa fa-google me-2 fa-2x text-danger"></i> Sign in with Google
-                    </span>
-                </button>
             </div>
         </div>
     </GuestLayout>

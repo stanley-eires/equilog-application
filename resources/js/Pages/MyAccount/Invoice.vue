@@ -4,6 +4,8 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import moment from 'moment';
 import { formatCurrency } from '@/helpers';
+import { nanoid } from 'nanoid';
+import paystack from "vue3-paystack";
 
 
 let dismiss = ref( true )
@@ -18,7 +20,22 @@ const totalCost = computed( () => {
 const isOwner = computed( () => {
     return usePage().props.auth.user.id == props.invoice.user_id
 } )
+const fullname = computed( () => { usePage().props.auth.user.name.split( ' ' ) } );
 
+let paystackdata = {
+    publicKey: 'pk_test_a509cf0b75f217f6e0adf29ab8cf622d86a70544',
+    firstname: usePage().props.auth.user.name.split( ' ' )[ 0 ],
+    lastname: usePage().props.auth.user.name.split( ' ' ).slice( 1 ).join( ' ' ),
+    reference: nanoid( 15 ),
+}
+
+const processPayment = ( response ) => {
+    useForm( {
+        reference: response.reference,
+        invoice: props.invoice.id
+    } ).post( route( 'myaccount.invoice.payment-via-paystack' ) )
+    console.log( response )
+};
 
 
 
@@ -124,6 +141,16 @@ const handleUpload = () => {
                                     </tr>
                                 </tfoot>
                             </table>
+                            <div class="d-flex justify-content-end" v-if="!invoice.payment_status && isOwner">
+                                <paystack buttonClass="btn btn-lg rounded-0 btn-primary"
+                                    :buttonText="`Pay ${formatCurrency(totalCost)} with Card`"
+                                    :publicKey="paystackdata.publicKey" :firstname="paystackdata.firstname"
+                                    :lastname="paystackdata.lastname" :email="$page.props.auth.user.email"
+                                    :amount="totalCost * 100" :reference="paystackdata.reference"
+                                    :onSuccess="processPayment">Pay
+                                    with card
+                                </paystack>
+                            </div>
                         </div>
                         <Link v-if="!invoice.payment_status && isOwner" :href="route('public.home')"><i
                             class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add more
@@ -133,11 +160,11 @@ const handleUpload = () => {
 
                     <h5>Transactions</h5>
                     <div class="table-responsive">
-                        <table class="table table-bordered border-secondary table-centered mb-5">
+                        <table class="table table-bordered border-secondary  table-centered mb-5">
                             <thead>
                                 <tr>
-                                    <th>Transaction Date</th>
-                                    <th>Gateway/Payment Method</th>
+                                    <th class="text-nowrap">Transaction Date</th>
+                                    <th class="text-nowrap">Payment Method</th>
                                     <th>Transaction ID</th>
                                     <th>Status</th>
                                     <th>Amount</th>
@@ -154,8 +181,8 @@ const handleUpload = () => {
                                                     of
                                                     Payment</em></a>
                                         </td>
-                                        <td>
-                                            <p style="width:100px" class="text-truncate">{{ i.id }}</p>
+                                        <td class="small" style="width:100%">
+                                            <span class="text-truncate">{{ i.id }}</span>
                                         </td>
                                         <td class="text-center ">
                                             <i v-if="i.status" class="fa fa-check-circle text-success"></i>
@@ -180,8 +207,9 @@ const handleUpload = () => {
                     </div>
                     <div class="card-body">
                         <p>You can make payment via bank deposit or mobile transer directly to any of the bank account
-                            displayed in the invoice using the generated invoice code <strong></strong> as
-                            narration. </p>
+                            displayed in the invoice <strong>using the generated invoice code (#{{ invoice.invoice_ref }})
+                            </strong> as
+                            narration. This makes it easier for the administrator to track the payment</p>
                         <p>You are to then <a href='#' @click.prevent="dismiss = false">click
                                 here</a> to upload evidence of successful
                             payment. Proof of payment might consist of the bank teller used in making deposit or the receipt
