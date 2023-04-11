@@ -83,7 +83,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $user['nin'] = $faker->randomNumber(9);
             $user['date_of_birth'] = date("Y-m-d", mt_rand($fixed_date, time()));
             $user['address'] = $faker->address;
-            $user['status'] = mt_rand(0, 10) != 0;
+            $user['status'] = $i == 0 ? 1 : mt_rand(0, 10) != 0;
             if (mt_rand(0, 1) == 1) {
                 $user['login_at'] = date("M d, Y h:i A", mt_rand($fixed_date, time()));
             }

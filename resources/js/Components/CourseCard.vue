@@ -9,8 +9,8 @@ defineProps( {
 
 </script>
 <template>
-    <Link class="card text-reset shadow-none" :href="route('public.course.single', [course.slug])">
-    <img class="card-img-top img-fluid course-card"
+    <Link class="card course-card text-reset shadow-lg" :href="route('public.course.single', [course.slug])">
+    <img class="card-img-top img-fluid course-card-img"
         :src="course.banner ? `/storage/${course.banner}` : `/assets/img/headers-2.jpg`" :alt="course.name">
     <div class="card-body">
         <h6 class=" mt-0 text-uppercase">{{ course.name }}</h6>
@@ -27,10 +27,19 @@ defineProps( {
     </Link>
 </template>
 <style scoped>
-.course-card {
+.course-card-img {
     width: 100%;
     height: 10rem;
     object-fit: cover;
+}
+
+.course-card {
+    transition: 0.5s;
+}
+
+.course-card:hover {
+    transform: scale(1.01);
+    box-shadow: none !important;
 }
 </style>
 

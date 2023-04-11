@@ -47,15 +47,15 @@ Route::prefix('myaccount')->group(
 );
 Route::prefix('admin')->group(
     function () {
-        Route::get('/', [Admin::class, 'index'])->name('admin.index')->middleware('auth');
-        Route::get('/users', [Admin::class, 'users'])->name('admin.users')->middleware('auth');
-        Route::get('/users/create', [Admin::class, 'userCreate'])->name('users.create')->middleware('auth');
+        Route::get('/', [Admin::class, 'index'])->name('admin.index')->middleware(['auth', 'auth.role:admin']);
+        Route::get('/users', [Admin::class, 'users'])->name('admin.users')->middleware(['auth', 'auth.role:admin']);
+        Route::get('/users/create', [Admin::class, 'userCreate'])->name('users.create')->middleware(['auth', 'auth.role:admin']);
         Route::post('/users/create', [Admin::class, 'userSave'])->name('users.save')->middleware('auth');
         Route::post('/users/actions', [Admin::class, 'usersActions'])->name('users.actions')->middleware('auth');
         Route::delete('/users', [Admin::class, 'usersDelete'])->name('users.delete')->middleware('auth');
-        Route::get('/user/{id}/edit', [Admin::class, 'userEdit'])->name('user.edit')->middleware('auth');
+        Route::get('/user/{id}/edit', [Admin::class, 'userEdit'])->name('user.edit')->middleware(['auth', 'auth.role:admin']);
         Route::put('/user/{id}/edit', [Admin::class, 'userUpdate'])->name('user.update')->middleware('auth');
-        Route::get('/user/{id}/{segment}', [Admin::class, 'user'])->name('user.single')->middleware('auth');
+        Route::get('/user/{id}/{segment}', [Admin::class, 'user'])->name('user.single')->middleware(['auth', 'auth.role:admin']);
         Route::post('/user/course-progress', [Admin::class, 'userCourseProgressActions'])->name('users.course.progress')->middleware('auth');
 
         Route::post('/cohort/save', [Admin::class, 'cohortSave'])->name('cohort.save')->middleware('auth');
@@ -63,20 +63,20 @@ Route::prefix('admin')->group(
         Route::post('/cohort/remove-user', [Admin::class, 'removeUserFromCohort'])->name('cohort.remove-users')->middleware('auth');
         Route::delete('/cohort', [Admin::class, 'removeCohort'])->name('cohort.delete')->middleware('auth');
 
-        Route::get('/courses', [Admin::class, 'courses'])->name('admin.courses')->middleware('auth');
-        Route::get('/courses/create', [Admin::class, 'courseCreate'])->name('course.create')->middleware('auth');
+        Route::get('/courses', [Admin::class, 'courses'])->name('admin.courses')->middleware(['auth', 'auth.role:admin']);
+        Route::get('/courses/create', [Admin::class, 'courseCreate'])->name('course.create')->middleware(['auth', 'auth.role:admin']);
         Route::post('/courses/create', [Admin::class, 'courseSave'])->name('course.save')->middleware('auth');
         Route::delete('/courses', [Admin::class, 'courseDelete'])->name('course.delete')->middleware('auth');
         Route::post('/courses/actions', [Admin::class, 'courseActions'])->name('courses.actions')->middleware('auth');
         Route::post('/course/{id}/edit', [Admin::class, 'courseUpdate'])->name('course.update')->middleware('auth');
-        Route::get('/course/{id}/{segment}', [Admin::class, 'Course'])->name('course.single')->middleware('auth');
+        Route::get('/course/{id}/{segment}', [Admin::class, 'Course'])->name('course.single')->middleware(['auth', 'auth.role:admin']);
 
-        Route::get('/invoices', [Admin::class, 'invoices'])->name('admin.invoices')->middleware('auth');
+        Route::get('/invoices', [Admin::class, 'invoices'])->name('admin.invoices')->middleware(['auth', 'auth.role:admin']);
         Route::delete('/invoices', [Admin::class, 'invoicesDelete'])->name('admin.invoices.delete')->middleware('auth');
         Route::post('/invoices', [Admin::class, 'invoicesApprove'])->name('admin.invoices.approve')->middleware('auth');
         Route::put('/invoices', [Admin::class, 'invoicesDecline'])->name('admin.invoices.decline')->middleware('auth');
 
-        Route::get('/site-settings', [Admin::class, 'siteSettings'])->name('admin.site-settings')->middleware('auth');
+        Route::get('/site-settings', [Admin::class, 'siteSettings'])->name('admin.site-settings')->middleware(['auth', 'auth.role:admin']);
         Route::post('/site-settings/{key}', [Admin::class, 'saveSiteSettings'])->name('admin.site-settings.save')->middleware('auth');
 
         Route::post('/maintenance-functions', [Admin::class, 'maintenanceFunctions'])->name('admin.maintenance-functions')->middleware('auth');

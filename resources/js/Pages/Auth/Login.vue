@@ -83,8 +83,8 @@ const handleLogin = ( response ) => {
                                     <Link :href="route('register')" class="fw-medium text-primary">Register</Link>
                                 </p>
                             </div>
-                            <GoogleLogin v-if="$page.props.auth_config?.allow_google_sso" prompt auto-login
-                                :callback="handleLogin" :client-id="$page.props.auth_config?.google_client_id"
+                            <GoogleLogin v-if="$page.props.auth_config?.allow_google_sso" prompt :callback="handleLogin"
+                                :client-id="$page.props.auth_config?.google_client_id"
                                 :buttonConfig="{ size: 'xlarge', text: 'continue_with', width: '400px' }" />
                         </form>
                     </div>

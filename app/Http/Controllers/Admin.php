@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
 use App\Models\SiteOptions;
+use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -418,6 +419,16 @@ class Admin extends Controller
         } elseif ($type == 'create_symlink') {
             $exitCode = Artisan::call("storage:link");
             $content = "Symlink created";
+        } elseif ($type == 'reset_platform') {
+            User::where('id', '!=', Auth::id())->delete();
+            Activity::truncate();
+            CohortGroup::truncate();
+            CohortGroupUsers::truncate();
+            Course::truncate();
+            CoursesUsers::truncate();
+            Invoice::truncate();
+            Transaction::truncate();
+            $content = "Tables Truncated. You are now the only user on the platform";
         }
         return back()->with('message', [
             'title' => 'Maintenance Functions',

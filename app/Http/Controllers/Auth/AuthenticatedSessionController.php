@@ -124,6 +124,6 @@ class AuthenticatedSessionController extends Controller
             'status' => null
         ]);
 
-        return to_route('public.home');
+        return to_route('login');
     }
 }
