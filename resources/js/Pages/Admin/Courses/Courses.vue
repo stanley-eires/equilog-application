@@ -7,8 +7,12 @@ import { ref } from "vue";
 
 
 
-defineProps( { title: String, courses: Object } );
+let props = defineProps( { title: String, courses: Object } );
 let id = ref( [] )
+
+let selectAll = ( ev ) => {
+    id.value = ev.target.checked ? props.courses.map( e => e.id ) : [];
+}
 
 </script>
 
@@ -17,19 +21,19 @@ let id = ref( [] )
         <div class="card card-body">
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3">
                 <div class="d-flex align-items-start mb-2">
-                    <Link :href="route('course.create')" class="btn btn-primary btn-sm text-nowrap"><i
+                    <Link as="button" :href="route('course.create')" class="btn btn-primary btn-sm text-nowrap"><i
                         class="fa fa-plus-circle me-1  "></i>
                     Add New</Link>
                     <div class="ms-1" v-if="id.length > 0">
-                        <Link method="post" class="btn btn-light btn-sm me-1 mb-1" :href="route('courses.actions')"
-                            :data="{ status: 1, id: id }" :preserve-state="false"><i
+                        <Link as="button" method="post" class="btn btn-light btn-sm me-1 mb-1"
+                            :href="route('courses.actions')" :data="{ status: 1, id: id }" :preserve-state="false"><i
                             class="fa fa-check me-1 text-success"></i>
                         Enable</Link>
-                        <Link :href="route('courses.actions')" :data="{ status: 0, id: id }" method="post"
+                        <Link as="button" :href="route('courses.actions')" :data="{ status: 0, id: id }" method="post"
                             :preserve-state="false" class="btn btn-light btn-sm me-1 mb-1"><i
                             class="fa fa-times me-1 text-danger"></i>
                         Disable</Link>
-                        <Link
+                        <Link as="button"
                             onclick="return confirm('Are you sure you want to delete this course(s)? This action is irreversible')"
                             :href="route('course.delete')" :data="{ id: id }" method="delete" :preserve-state="false"
                             class="btn btn-outline-danger btn-sm mb-1"><i class="fa fa-trash me-1"></i>
@@ -65,7 +69,7 @@ let id = ref( [] )
                         <tr>
                             <th style="width:2px">
                                 <div class="form-check pt-0">
-                                    <input class="form-check-input" type="checkbox">
+                                    <input @change="selectAll($event)" class="form-check-input" type="checkbox">
                                 </div>
                             </th>
                             <th>Course</th>

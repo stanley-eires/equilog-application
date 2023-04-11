@@ -63,8 +63,12 @@ let properDates = ( date ) => {
                         </li>
                         <li class="nav-item">
                             <button @click.prevent="currentTab = 'kin'" class="nav-link bg-transparent"
-                                :class="{ 'active': currentTab != 'medicals' }" href="#">Next
+                                :class="{ 'active': currentTab == 'kin' }" href="#">Next
                                 Of Kin</button>
+                        </li>
+                        <li class="nav-item">
+                            <button @click.prevent="currentTab = 'group'" class="nav-link bg-transparent"
+                                :class="{ 'active': currentTab == 'group' }" href="#">Groups</button>
                         </li>
                     </ul>
                     <div v-if="currentTab == 'medicals'">
@@ -121,7 +125,7 @@ let properDates = ( date ) => {
                         <a target="_blank" :href="`/storage/${user.medicals.certificate}`" v-if="user.medicals.certificate"
                             class="btn btn-dark">View Medical Report</a>
                     </div>
-                    <div v-else>
+                    <div v-else-if="currentTab == 'kin'">
                         <table class='table table-centered'>
                             <tbody>
                                 <tr>
@@ -142,6 +146,16 @@ let properDates = ( date ) => {
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div v-else-if="currentTab == 'group'">
+                        <ul class="list-unstyled">
+                            <li class="d-flex small justify-content-between" v-for="i in user.groups" :key="i.id">
+                                <Link :href="route('admin.users', [{ cgi: i.id, cgn: i.name }])">{{ i.name }}</Link>
+                                <Link class="btn" method="post" as="button" :data="{ cohort: i.id, user_id: user.id }"
+                                    :href="route('cohort.remove-users')"><i class="fa fa-trash-o text-danger"></i></Link>
+
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

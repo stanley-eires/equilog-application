@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\MyAccount;
 use App\Http\Controllers\PublicController;
 use App\Mail\Email;
+use App\Models\CohortGroup;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\User;
@@ -50,13 +51,17 @@ Route::prefix('admin')->group(
         Route::get('/users', [Admin::class, 'users'])->name('admin.users')->middleware('auth');
         Route::get('/users/create', [Admin::class, 'userCreate'])->name('users.create')->middleware('auth');
         Route::post('/users/create', [Admin::class, 'userSave'])->name('users.save')->middleware('auth');
-        Route::post('/users/actions', [Admin::class, 'usersActions'])->name('users.actions')->middleware('auth')->middleware('auth');
+        Route::post('/users/actions', [Admin::class, 'usersActions'])->name('users.actions')->middleware('auth');
         Route::delete('/users', [Admin::class, 'usersDelete'])->name('users.delete')->middleware('auth');
         Route::get('/user/{id}/edit', [Admin::class, 'userEdit'])->name('user.edit')->middleware('auth');
         Route::put('/user/{id}/edit', [Admin::class, 'userUpdate'])->name('user.update')->middleware('auth');
         Route::get('/user/{id}/{segment}', [Admin::class, 'user'])->name('user.single')->middleware('auth');
-
         Route::post('/user/course-progress', [Admin::class, 'userCourseProgressActions'])->name('users.course.progress')->middleware('auth');
+
+        Route::post('/cohort/save', [Admin::class, 'cohortSave'])->name('cohort.save')->middleware('auth');
+        Route::post('/cohort/add-users', [Admin::class, 'addUsersToCohort'])->name('cohort.add-users')->middleware('auth');
+        Route::post('/cohort/remove-user', [Admin::class, 'removeUserFromCohort'])->name('cohort.remove-users')->middleware('auth');
+        Route::delete('/cohort', [Admin::class, 'removeCohort'])->name('cohort.delete')->middleware('auth');
 
         Route::get('/courses', [Admin::class, 'courses'])->name('admin.courses')->middleware('auth');
         Route::get('/courses/create', [Admin::class, 'courseCreate'])->name('course.create')->middleware('auth');
@@ -82,6 +87,8 @@ Route::prefix('seedings')->group(function () {
     Route::post('users', fn () => User::seedUsers())->name('seedings.users');
     Route::post('courses', fn () => Course::seedCourses())->name('seedings.courses');
     Route::post('courses_users', fn () => CoursesUsers::seedCourseUsers())->name('seedings.courses.users');
+    Route::post('cohorts', fn () => CohortGroup::seedGroup())->name('seedings.groups');
+
     Route::post('testmail', function () {
         $subject = "[Equilog] Reactivation of internet login on CU network";
         $content = "This is to remind all faculty and staff that the internet login will be reactivated on the CU network starting this evening.

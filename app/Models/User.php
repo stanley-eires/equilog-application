@@ -42,7 +42,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'work_experience' =>  '{"title":null, "employer":null, "location": null, "date":null}',
         'education' =>  '{"degree":null, "institution":null, "location": null, "date":null}',
         'medicals' =>  '{"genotype":null, "bloodgroup":null, "rhd": null, "phone":null, "weight": null, "hearing":null, "vision": null, "hiv":null, "covid":null, "meningitis":null, "tuberculosis":null,"certificate":null}',
-        'roles' =>  '{"admin":null, "subscriber":true, "coordinator": null}',
+        'roles' =>  '{"admin":false, "subscriber":true, "coordinator": null}',
     ];
 
     /**
@@ -64,14 +64,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CoursesUsers::class, 'user_id');
     }
 
-    public static function  seedUsers()
+    public static function seedUsers()
     {
         DB::table('users')->truncate();
         $faker = \Faker\Factory::create();
         $fixed_date = strtotime('10 years ago');
         for ($i = 0; $i < 100; $i++) {
-            $user['name'] = $faker->name;
-            $user['email'] = $faker->email;
+            $user = null;
+            $user['name'] = $i == 0 ? 'Equilog Admin' : $faker->name;
+            $user['email'] = $i == 0 ? env('MAIL_FROM_ADDRESS') : $faker->email;
+            if ($i == 0) {
+                $user['roles'] =  ["admin" => true, "subscriber" => true, "coordinator" => null];
+            }
             $user['password'] = Hash::make('password');
             $user['gender'] = $faker->randomElement(['Male', 'Female']);
             $user['marital_status'] = $faker->randomElement(['Single', 'Married', 'Divorced', 'Widowed']);
@@ -80,9 +84,8 @@ class User extends Authenticatable implements MustVerifyEmail
             $user['date_of_birth'] = date("Y-m-d", mt_rand($fixed_date, time()));
             $user['address'] = $faker->address;
             $user['status'] = mt_rand(0, 10) != 0;
-            if (mt_rand(0, 2) == 1) {
+            if (mt_rand(0, 1) == 1) {
                 $user['login_at'] = date("M d, Y h:i A", mt_rand($fixed_date, time()));
-                $user['email_verified_at'] = date("M d, Y h:i A", mt_rand($fixed_date, time()));
             }
             $user['summary'] = $faker->realText();
             $user['email_verified_at'] = date("");
@@ -125,7 +128,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'tuberculosis' => $faker->randomElement(['Positive', 'Negative']),
                 'certificate' => null
             ];
-
+            $user['email_verified_at'] = date("Y-m-d H:i:s", mt_rand($fixed_date, time()));
             self::create($user);
         }
         back();

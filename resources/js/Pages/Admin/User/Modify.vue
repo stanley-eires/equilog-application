@@ -116,6 +116,8 @@ const form = useForm( props.user );
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
+                            <Link class="btn " :href="route('admin.users')"><i class="fa fa-arrow-left me-2"></i>Back to all
+                            users</Link>
                             <button type="submit" :disabled="form.processing" class="btn btn-primary"><span
                                     v-if="form.processing" class="spinner-border spinner-border-sm me-2"></span> Save
                                 Changes</button>

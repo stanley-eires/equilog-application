@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\Email;
 use App\Models\Activity;
+use App\Models\CohortGroup;
+use App\Models\CohortGroupUsers;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
@@ -40,8 +42,15 @@ class Admin extends Controller
     }
     public function users(Request $request)
     {
-        $data['users'] = User::select('name', 'id', 'email', 'status', 'profile_picture', 'login_at')->orderBy('name', 'asc')->withCount('courses')->paginate(10);
-        $data['title'] = "Platform Users";
+        if ($request->cgi) {
+            $data['title'] = "{$request->cgn} Users";
+            $data['users'] = User::join('cohort_group_users', 'cohort_group_users.user_id', '=', 'users.id')->select('name', 'users.id', 'email', 'status', 'profile_picture', 'login_at')->where('cohort_group_id', $request->cgi)->orderBy('name', 'asc')->withCount('courses')->paginate(100);
+        } else {
+            $data['title'] = "Platform Users";
+            $data['users'] = User::select('name', 'id', 'email', 'status', 'profile_picture', 'login_at')->orderBy('name', 'asc')->withCount('courses')->paginate(10);
+        }
+        $data['all_count'] = User::count();
+        $data['cohorts'] = CohortGroup::leftJoin('cohort_group_users', 'cohort_groups.id', '=', 'cohort_group_users.cohort_group_id')->selectRaw('name,cohort_groups.id as id,description,count(cohort_group_id) as count')->orderBy('name')->groupBy('cohort_group_id')->get();
         return Inertia::render('Admin/Users', $data);
     }
     public function user(Request $request, $id, $segment)
@@ -50,6 +59,7 @@ class Admin extends Controller
         if ($segment == 'profile') {
             $user = $user->addSelect('summary', 'work_experience', 'education', 'medicals', 'next_of_kin');
             $data['user'] = $user->where('id', $id)->findOrFail($id);
+            $data['user']->groups = CohortGroup::join('cohort_group_users', 'cohort_groups.id', '=', 'cohort_group_users.cohort_group_id')->selectRaw('name,cohort_groups.id as id')->where(['cohort_group_users.user_id' => $id])->orderBy('name')->get();
             $data['title'] = "{$data['user']->name} - Profile";
         } elseif ($segment == 'courses') {
             $data['user'] = $user->where('id', $id)->findOrFail($id);
@@ -157,6 +167,34 @@ class Admin extends Controller
         CoursesUsers::whereIn('id', $request->only('id')['id'])->update($request->except('id'));
         return back();
     }
+
+    public function cohortSave(Request $request)
+    {
+        CohortGroup::updateOrCreate($request->post());
+        return back();
+    }
+    public function addUsersToCohort(Request $request)
+    {
+        foreach ($request->users as $key) {
+            if (CohortGroupUsers::where(['cohort_group_id' => $request->cohort, 'user_id' => $key])->count() == 0) {
+                CohortGroupUsers::create(['cohort_group_id' => $request->cohort, 'user_id' => $key]);
+            }
+        }
+        return back();
+    }
+    public function removeUserFromCohort(Request $request)
+    {
+        CohortGroupUsers::where(['cohort_group_id' => $request->cohort, 'user_id' => $request->user_id])->delete();
+        return back();
+    }
+
+    public function removeCohort(Request $request)
+    {
+        CohortGroupUsers::where(['cohort_group_id' => $request->id])->delete();
+        CohortGroup::where(['id' => $request->id])->delete();
+    }
+
+
     public function courses(Request $request)
     {
         $data['courses'] = Course::orderBy('name', 'asc')->withCount('courses')->get();

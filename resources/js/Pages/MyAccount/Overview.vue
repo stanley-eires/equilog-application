@@ -49,7 +49,7 @@ const gridmenus = [
                         <div class="row">
                             <div class="col-md-6" v-for="(menu, index) in gridmenus" :key="index">
                                 <div class="card card-body text-center waves-effect">
-                                    <h2 class="">{{ menu.name }}</h2>
+                                    <h4 class="">{{ menu.name }}</h4>
                                     <i class="fa fa-4x my-3" :class="menu.icon"></i>
 
                                     <p>{{ menu.description }}</p>
