@@ -12,22 +12,11 @@ const props = defineProps( { title: String, course: Object } );
 //const form = useForm( props.course );
 
 const form = useForm( {
-    id: props?.course?.id ?? null,
-    name: props?.course?.name ?? null,
-    program: props?.course?.program ?? null,
-    description: props?.course?.description ?? null,
-    learning_methods: props?.course?.learning_methods ?? [],
-    status: props?.course?.status || props?.course?.status == '1' ? true : false,
-    summary: props?.course?.summary ?? null,
-    date_of_commencement: props?.course?.date_of_commencement ?? null,
-    duration: props?.course?.duration ?? null,
-    discounted_cost: props?.course?.discounted_cost ?? null,
-    cost: props?.course?.cost ?? null,
-    banner: props?.course?.banner ?? null,
 
 } );
 
-const featuredImage = ref( props.course?.banner ? `/storage/${ props.course.banner }` : form.banner );
+
+const featuredImage = ref( props.course.banner ? `/storage/${ props.course.banner }` : form.banner );
 let handleAddFile = ( ev ) => {
 
     form.banner = ev.target.files[ 0 ];
@@ -42,9 +31,9 @@ let handleAddFile = ( ev ) => {
 </script>
 
 <template>
-    <component :is="course?.id ? Index : AuthenticatedLayout" :title="title" :course_id="course ? course.id : null">
+    <component :is="$props.course.id ? Index : AuthenticatedLayout" :title="title" :course_id="course ? course.id : null">
         <form enctype="multipart/form-data"
-            @submit.prevent="course?.id ? form.post(route('course.update', [course.id])) : form.post(route('course.save'))"
+            @submit.prevent="course.id ? form.post(route('course.update', [course.id])) : form.post(route('course.save'))"
             class="row">
             <div class="col-xl-8">
                 <div class="card card-body">
@@ -89,21 +78,21 @@ let handleAddFile = ( ev ) => {
                                 <div class="col-lg-4">
                                     <label for="">Learning Methods</label>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="virtual"
-                                            v-model="form.learning_methods" id="virtual">
+                                        <input class="form-check-input" type="checkbox" value="true"
+                                            v-model="form.learning_methods.virtual" id="virtual">
                                         <label class="form-check-label" for="virtual">Virtual </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" v-model="form.learning_methods"
-                                            value="inclass" id="in-class">
+                                        <input class="form-check-input" type="checkbox"
+                                            v-model="form.learning_methods.inclass" value="true" id="in-class">
                                         <label class="form-check-label" for="in-class">In Class</label>
                                     </div>
                                     <label class="mt-3">Course Availability</label>
                                     <div class="form-check form-switch ">
-                                        <input class="form-check-input" v-model.number="form.status" :value='1'
-                                            type="checkbox" id="flexSwitchCheckChecked">
+                                        <input class="form-check-input" v-model="form.status" type="checkbox"
+                                            id="flexSwitchCheckChecked" value="1">
                                         <label class="form-check-label" for="flexSwitchCheckChecked">
-                                            Make this course publically available{{ form.status }}</label>
+                                            {{ form.status ? 'Active' : 'Inactive' }}</label>
                                     </div>
                                 </div>
                             </div>

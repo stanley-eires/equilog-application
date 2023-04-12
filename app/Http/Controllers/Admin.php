@@ -12,7 +12,6 @@ use App\Models\Invoice;
 use App\Models\SiteOptions;
 use App\Models\Transaction;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +19,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
-use stdClass;
 
 class Admin extends Controller
 {
@@ -228,7 +226,8 @@ class Admin extends Controller
     public function courseCreate()
     {
         $data['title'] = 'Create Course';
-        $data['course'] = ['name' => null, 'summary' => null, 'description' => null, 'status' => null, 'program' => null, 'cost' => null, 'discounted_cost' => null, 'duration' => null, 'banner' => null, 'date_of_commencement' => null, 'learning_methods' => ['virtual' => true, 'inclass' => true], 'banner' => null];
+        $data['course'] = null;
+        // $data['course'] = ['name' => null, 'summary' => null, 'description' => null, 'status' => null, 'program' => null, 'cost' => null, 'discounted_cost' => null, 'duration' => null, 'banner' => null, 'date_of_commencement' => null, 'learning_methods' => ['virtual' => true, 'inclass' => true], 'banner' => null];
         return Inertia::render("Admin/Courses/Modify", $data);
     }
     public function courseSave(Request $request)

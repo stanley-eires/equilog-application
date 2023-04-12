@@ -42,7 +42,7 @@ let handleSave = () => form.post( route( 'admin.site-settings.save', [ 'payment'
             <div class="form-group mb-5">
                 <h5>Bank Accounts Information</h5>
                 <editor v-model="form.bank_transfer.transfer_details"
-                    api-key="xi62uvac03b7vuqqfj6f3lr8x2z6vkd4048al3e3m9hoouny" :init="{
+                    api-key="dk2z3jooyy5g31ivw3ah1ohaaj5jhc9pyq35bfwvcktbj3hl" :init="{
                         height: '200',
                         menubar: false,
                     }" class="w-100 form-control"></editor>
@@ -50,7 +50,7 @@ let handleSave = () => form.post( route( 'admin.site-settings.save', [ 'payment'
             <div class="form-group mb-3">
                 <h5>Instructions on manual payment</h5>
                 <editor v-model="form.bank_transfer.manual_payment_instructions"
-                    api-key="xi62uvac03b7vuqqfj6f3lr8x2z6vkd4048al3e3m9hoouny" :init="{
+                    api-key="dk2z3jooyy5g31ivw3ah1ohaaj5jhc9pyq35bfwvcktbj3hly" :init="{
                         height: '200',
                         menubar: false,
                     }" class="w-100 form-control"></editor>

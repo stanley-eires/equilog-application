@@ -15,13 +15,13 @@ let props = defineProps( {
 
 
 let method = computed( () => {
-    if ( props.course.learning_methods.virtual && props.course.learning_methods.inclass ) {
+    if ( props.course.learning_methods.includes( 'virtual' ) && props.course.learning_methods.includes( 'inclass' ) ) {
         return "Virtual and In-Class";
     }
-    else if ( props.course.learning_methods.virtual ) {
+    else if ( props.course.learning_methods.includes( 'virtual' ) ) {
         return "Virtually Online";
     }
-    else if ( props.course.learning_methods.inclass ) {
+    else if ( props.course.learning_methods.includes( 'inclass' ) ) {
         return "In-Class Mode";
     }
 } )
