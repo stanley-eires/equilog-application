@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Mail\Email;
 use App\Models\Activity;
+use App\Models\CohortGroup;
+use App\Models\CohortGroupUsers;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
+use App\Models\Messages;
 use App\Models\SiteOptions;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -19,7 +23,7 @@ class MyAccount extends Controller
 {
     public function overview(Request $request)
     {
-        $data['title'] = "My Account - Overview";
+        $data['title'] = "Overview";
         return Inertia::render('MyAccount/Overview', $data);
     }
     public function personalInfo(Request $request)
@@ -28,6 +32,63 @@ class MyAccount extends Controller
         $data['user'] = collect(Auth::user())->forget(['created_at', 'updated_at']);
         return Inertia::render('MyAccount/PersonalInfo', $data);
     }
+
+    public function messages(Request $request, $segment = null, $message_id = null)
+    {
+
+        $data['stats']['unread_count'] = Messages::where(['read_at' => NULL, 'receiver_id' => Auth::id()])->count();
+        $data['stats']['administrators'] = User::select('id', 'name', 'email', 'profile_picture')->whereJsonContains('roles', ['admin'])->get();
+        if ($message_id) {
+            $data['message'] = Messages::join('users', 'users.id', '=', 'messages.sender_id')->select('messages.id', 'name as sender_name', 'profile_picture', 'email', 'subject', 'message', 'messages.created_at')->where('messages.id', $message_id)->first();
+            $data['title'] = $data['message']->subject;
+            return Inertia::render('MyAccount/Messages/Single', $data);
+        } elseif ($segment == 'compose' && $request->id) {
+            $data['option']['mode'] = $request->type;
+            if ($request->type == 'group') {
+                $data['option']['data'] = CohortGroup::leftJoin('cohort_group_users', 'cohort_groups.id', '=', 'cohort_group_users.cohort_group_id')->selectRaw('name,cohort_groups.id as id,count(cohort_group_id) as count')->orderBy('name')->groupBy('cohort_group_id')->findOrFail($request->id);
+            } else {
+                $data['option']['data'] = User::select('name', 'id', 'email', 'profile_picture')->findOrFail($request->id);
+            }
+            $data['title'] = "Compose Message";
+            return Inertia::render('MyAccount/Messages/Compose', $data);
+        } else {
+            $data['title'] = "Inbox";
+            $data['inbox'] = Messages::join('users', 'users.id', '=', 'messages.sender_id')->select('messages.id', 'name as sender_name', 'subject', 'message', 'messages.created_at', 'read_at')->where(['receiver_id' => Auth::id()])->paginate(10);
+        }
+        return Inertia::render('MyAccount/Messages/Inbox', $data);
+    }
+
+    public function updateMessage(Request $request, $id)
+    {
+        Messages::where(['messages.id' => $id])->update($request->post());
+        return back();
+    }
+
+    public function sendMessage(Request $request)
+    {
+        if ($request->mode == 'personal') {
+            $users = User::select('name', 'id as user_id', 'email')->where('id', $request->id)->get();
+        } else {
+            $users = CohortGroupUsers::join('users', 'users.id', '=', 'cohort_group_users.user_id')->select('name', 'users.id as user_id', 'email')->where(['cohort_group_id' => $request->id])->get();
+        }
+        if ($request->as_email) {
+            foreach ($users as $recipient) {
+                Mail::to($recipient)->send(new Email($request->subject, $request->message));
+            }
+        }
+        foreach ($users as $recipient) {
+            Messages::create([
+                'sender_id' => Auth::id(), 'receiver_id' => $recipient->user_id, 'subject' => $request->subject, 'message' => $request->message
+            ]);
+        }
+
+        return to_route('myaccount.messages')->with('message', [
+            'title' => "Message",
+            'content' => "Your mesage has been sent",
+            'status' => 'success'
+        ]);
+    }
+
     public function security(Request $request)
     {
         $data['title'] = "Security";

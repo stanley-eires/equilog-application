@@ -14,7 +14,7 @@ class Course extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
-        'name', 'summary', 'description', 'status', 'program', 'cost', 'discounted_cost', 'duration', 'learning_methods', 'date_of_commencement', 'banner', 'user_id', 'slug'
+        'id', 'name', 'summary', 'description', 'status', 'program', 'cost', 'discounted_cost', 'duration', 'learning_methods', 'date_of_commencement', 'banner', 'user_id', 'slug'
     ];
     protected $attributes = [
         'learning_methods' => '["virtual","inclass"]',

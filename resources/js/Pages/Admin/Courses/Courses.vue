@@ -39,7 +39,7 @@ let selectAll = ( ev ) => {
                             class="btn btn-outline-danger btn-sm mb-1"><i class="fa fa-trash me-1"></i>
                         Delete</Link>
                     </div>
-                    <div class="dropdown open ms-2">
+                    <div class="dropdown open ms-2" v-if="$page.props.debug">
                         <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button"
                             data-bs-toggle="dropdown">
                             <i class="fa fa-ellipsis-v"></i>

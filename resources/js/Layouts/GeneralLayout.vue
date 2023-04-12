@@ -33,7 +33,7 @@ onUnmounted( () => {
                     </Link>
                 </div>
             </div>
-            <div class="d-flex">
+            <div class="d-flex align-items-center">
                 <div class="dropdown d-inline-block d-lg-none ms-2">
                     <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

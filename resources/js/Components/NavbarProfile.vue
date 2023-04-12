@@ -1,6 +1,6 @@
 <template>
     <template v-if="$page.props.auth.user">
-        <div class="dropdown d-inline-block ms-1" v-if="$page.props.auth.user.roles.admin">
+        <div class="dropdown d-inline-block ms-1" v-if="$page.props.auth.user.roles.includes('admin')">
             <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 <i class="fa-th fa"></i>

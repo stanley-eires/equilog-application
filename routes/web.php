@@ -36,6 +36,12 @@ Route::prefix('myaccount')->group(
         Route::middleware(['auth'])->group(function () {
             Route::get('overview', [MyAccount::class, 'overview'])->name('myaccount.overview');
             Route::get('personal-info', [MyAccount::class, 'personalInfo'])->name('myaccount.personal-info');
+
+            Route::get('messages/{segment?}/{message?}', [MyAccount::class, 'messages'])->name('myaccount.messages');
+            Route::post('messages', [MyAccount::class, 'sendMessage'])->name('myaccount.sendmessage');
+            Route::put('messages/{id}', [MyAccount::class, 'updateMessage'])->name('myaccount.updatemessage');
+
+
             Route::get('security', [MyAccount::class, 'security'])->name('myaccount.security');
             Route::get('invoices', [MyAccount::class, 'invoices'])->name('myaccount.invoices');
             Route::get('courses', [MyAccount::class, 'courses'])->name('myaccount.courses');

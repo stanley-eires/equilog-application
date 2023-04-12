@@ -37,8 +37,9 @@ const menus = [
                     </ul>
                 </div>
                 <div class="col-md-3 text-center">
-                    <a :href="`mailto:${user.email}`" class="btn btn-primary w-75 "><i class="fa fa-envelope me-2"></i> Send
-                        Message</a>
+                    <Link :href="route('myaccount.messages', ['compose'])" :data="{ type: 'personal', id: user.id }"
+                        class="btn btn-primary w-75 "><i class="fa fa-envelope-o me-2"></i>Send
+                    Message</Link>
                 </div>
             </div>
         </section>

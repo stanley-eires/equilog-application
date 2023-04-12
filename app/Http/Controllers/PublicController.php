@@ -19,7 +19,7 @@ class PublicController extends Controller
 
     public function course(Request $request, $slug)
     {
-        $data['course'] = Course::where('slug', $slug)->first();
+        $data['course'] = Course::where('slug', $slug)->firstOrFail();
         $data['my_application'] = CoursesUsers::select('created_at')->where(['course_id' => $data['course']->id, 'user_id' => Auth::id()])->first();
         $data['title'] = $data['course']->name;
         return Inertia::render('Public/CourseSingle', $data);

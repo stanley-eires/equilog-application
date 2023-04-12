@@ -71,8 +71,11 @@ let create_cohort_form = useForm( {
                             </Link>
                             <div>
                                 <div class="btn-group" role="group">
-                                    <button title="Send message to this group" v-if='i.count > 0' class="btn btn-sm"><i
-                                            class="fa fa-envelope-o"></i></button>
+                                    <Link title="Send message to this group" v-if='i.count > 1' class="btn btn-sm"
+                                        :href="route('myaccount.messages', ['compose'])"
+                                        :data="{ type: 'group', id: i.id }">
+                                    <i class="fa fa-envelope-o"></i>
+                                    </Link>
                                     <Link title="Remove group" class="btn btn-sm" method="POST"
                                         :href="route('cohort.delete')" as="button" :data="{ id: i.id, _method: 'delete' }"
                                         :preserve-state="false"><i class="fa fa-trash-o"></i></Link>
@@ -93,7 +96,7 @@ let create_cohort_form = useForm( {
                             <template v-if="id.length == 0">
                                 <Link class="btn btn-primary btn-sm text-nowrap" :href="route('users.create')"><i
                                     class="fa fa-plus-circle me-1"></i> Add New</Link>
-                                <div class="dropdown open ms-2">
+                                <div class="dropdown open ms-2" v-if="$page.props.debug">
                                     <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown">
                                         <i class="fa fa-ellipsis-v"></i>
@@ -216,9 +219,11 @@ let create_cohort_form = useForm( {
                                         <td class="text-capitalize fst-italic text-nowrap">
                                             {{ humanizeTime(user.login_at) }}
                                         </td>
-                                        <td><a :href="`mailto:${user.email}`" class="btn btn-link"><i
-                                                    class="fa fa-envelope me-1"></i>Send
-                                                Message</a>
+                                        <td>
+                                            <Link :href="route('myaccount.messages', ['compose'])"
+                                                :data="{ type: 'personal', id: user.id }" class="btn btn-link btn-sm"><i
+                                                class="fa fa-envelope-o me-1"></i>Send
+                                            Message</Link>
                                         </td>
                                     </tr>
                                 </template>

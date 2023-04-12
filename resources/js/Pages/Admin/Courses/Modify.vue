@@ -12,18 +12,18 @@ const props = defineProps( { title: String, course: Object } );
 //const form = useForm( props.course );
 
 const form = useForm( {
-    id: props?.course?.id ?? null,
-    name: props?.course?.name ?? null,
-    program: props?.course?.program ?? null,
-    description: props?.course?.description ?? null,
-    learning_methods: props?.course?.learning_methods ?? [],
-    status: props?.course?.status || props?.course?.status == '1' ? true : false,
-    summary: props?.course?.summary ?? null,
-    date_of_commencement: props?.course?.date_of_commencement ?? null,
-    duration: props?.course?.duration ?? null,
-    discounted_cost: props?.course?.discounted_cost ?? null,
-    cost: props?.course?.cost ?? null,
-    banner: props?.course?.banner ?? null,
+    id: props.course?.id ?? null,
+    name: props.course?.name ?? null,
+    program: props.course?.program ?? null,
+    description: props.course?.description ?? null,
+    learning_methods: props.course?.learning_methods ?? [],
+    status: props.course?.status || props.course?.status == '1' ? true : false,
+    summary: props.course?.summary ?? null,
+    date_of_commencement: props.course?.date_of_commencement ?? null,
+    duration: props.course?.duration ?? null,
+    discounted_cost: props.course?.discounted_cost ?? null,
+    cost: props.course?.cost ?? null,
+    banner: props.course?.banner ?? null,
 
 } );
 
@@ -51,9 +51,8 @@ let handleAddFile = ( ev ) => {
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="form-floating mb-3">
-                                <input type="text" required class="form-control" placeholder="Course Name"
-                                    v-model="form.name" maxlength="30">
-                                <label>Name</label>
+                                <input type="text" required class="form-control" v-model="form.name" maxlength="30">
+                                <label>Name *</label>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -63,7 +62,7 @@ let handleAddFile = ( ev ) => {
                                         v-for="(i, index) in ['Digital Entrepreneurship', 'Machine Operation', 'SME Digital Boot-camp']"
                                         :key="index">{{ i }}</option>
                                 </select>
-                                <label>Program</label>
+                                <label>Program *</label>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
@@ -103,7 +102,7 @@ let handleAddFile = ( ev ) => {
                                         <input class="form-check-input" v-model.number="form.status" :value='1'
                                             type="checkbox" id="flexSwitchCheckChecked">
                                         <label class="form-check-label" for="flexSwitchCheckChecked">
-                                            Make this course publically available{{ form.status }}</label>
+                                            Make this course publically available</label>
                                     </div>
                                 </div>
                             </div>
@@ -114,20 +113,19 @@ let handleAddFile = ( ev ) => {
             <div class="col-xl-4 ">
                 <div class="card card-body mb-2">
                     <div class="form-floating">
-                        <textarea style="height:100px" class="form-control" required placeholder="Summary"
-                            v-model="form.summary" maxlength="300"></textarea>
-                        <label>Summary</label>
+                        <textarea style="height:100px" class="form-control" required v-model="form.summary"
+                            maxlength="300"></textarea>
+                        <label>Summary *</label>
                     </div>
                 </div>
                 <div class="card card-body mb-2">
                     <div class="form-floating mb-3">
-                        <input type="date" required class="form-control" placeholder="Date of Commencement"
-                            v-model="form.date_of_commencement">
-                        <label>Date of Commencement</label>
+                        <input type="date" required class="form-control" v-model="form.date_of_commencement">
+                        <label>Date of Commencement *</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" required placeholder="Duration" v-model="form.duration">
-                        <label>Duration</label>
+                        <input type="text" class="form-control" required v-model="form.duration">
+                        <label>Duration *</label>
                     </div>
                 </div>
 
@@ -135,13 +133,13 @@ let handleAddFile = ( ev ) => {
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-floating mb-3">
-                                <input type="number" class="form-control" required placeholder="Cost" v-model="form.cost">
-                                <label>Course Price (NGN)</label>
+                                <input type="number" class="form-control" required v-model="form.cost">
+                                <label>Course Price (NGN) *</label>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-floating mb-3">
-                                <input type="number" class="form-control" placeholder="Cost" v-model="form.discounted_cost">
+                                <input type="number" class="form-control" v-model="form.discounted_cost">
                                 <label>Discounted Cost (NGN)</label>
                             </div>
                         </div>

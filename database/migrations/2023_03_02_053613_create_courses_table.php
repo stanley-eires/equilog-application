@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->longText('summary');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->boolean('status')->default(1);
             $table->string('program');
             $table->string('cost');

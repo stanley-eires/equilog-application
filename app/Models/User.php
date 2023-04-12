@@ -42,7 +42,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'work_experience' =>  '{"title":null, "employer":null, "location": null, "date":null}',
         'education' =>  '{"degree":null, "institution":null, "location": null, "date":null}',
         'medicals' =>  '{"genotype":null, "bloodgroup":null, "rhd": null, "phone":null, "weight": null, "hearing":null, "vision": null, "hiv":null, "covid":null, "meningitis":null, "tuberculosis":null,"certificate":null}',
-        'roles' =>  '{"admin":false, "subscriber":true, "coordinator": null}',
+        'roles' =>  '["subscriber"]',
     ];
 
     /**
@@ -74,7 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $user['name'] = $i == 0 ? 'Equilog Admin' : $faker->name;
             $user['email'] = $i == 0 ? env('MAIL_FROM_ADDRESS') : $faker->email;
             if ($i == 0) {
-                $user['roles'] =  ["admin" => true, "subscriber" => true, "coordinator" => null];
+                $user['roles'] =  ["admin", "subscriber", "coordinator"];
             }
             $user['password'] = Hash::make('password');
             $user['gender'] = $faker->randomElement(['Male', 'Female']);

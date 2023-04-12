@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('message')
             ],
             'auth_config' => fn () => SiteOptions::getOption('auth'),
+            'debug' => fn () => env('APP_DEBUG')
         ]);
     }
 }

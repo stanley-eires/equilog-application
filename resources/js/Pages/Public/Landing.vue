@@ -8,6 +8,11 @@ defineProps( {
     title: String,
     courses: Object
 } );
+let scrollToView = ( ele ) => {
+    document.querySelector( ele ).scrollIntoView( {
+        behavior: 'smooth'
+    } );
+}
 let brands = [ 'dangote', 'amaiden', 'fmn', 'justrite', 'mikano', 'chevron' ];
 let categories = [
     { name: 'Machine operation', active: true, slug: 'machine', title: 'Get skilled in heavy machine operation', description: "The globally skilled labor shortage is one of the greatest challenges facing the construction industry.With the rise in the construction of commercial mega structures like Lekki deep Seaport, Dangote refinery, and EKo –Atlantic projects, the skill, and competency –gap for heavy machine operators became wider hence the increase in demand for the heavy machine operator in the labour market. Our machinery operator training is both classroom training and hands-on-the-job learning under the supervision of experienced instructors.", category: "Machine Operation" },
@@ -32,7 +37,7 @@ let categories = [
             </div>
         </div>
         <template #banner>
-            <div class="banner" style="background-image: url('/assets/img/slide3.jpg');">
+            <div class="banner">
                 <div class="row align-items-center">
                     <div class="col-md-7">
                         <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
@@ -69,18 +74,24 @@ let categories = [
                             </button>
                         </div>
                     </div>
-                    <div class="col-md-5 mt-5 d-flex flex-column justify-content-center card-body" style="min-height:60vh">
-                        <h1 class="display-3 fw-bold text-white mb-4">Bridging the Gap Initiative</h1>
-                        <p class="lead text-white">Bridge the gap program is a skill-to-wealth project designed
+                    <div class="col-md-5 card-body">
+                        <h2 class="display-5 fw-bold text-reset mb-4">Bridging the Gap Initiative</h2>
+                        <p class="lead font-size-20  mb-xl-5">Bridge the gap program is a skill-to-wealth project
+                            designed
                             to equip and elevate unemployed young men and women above the poverty line through
                             industry-relevant digital, technical, and vocational skills for self-development,
                             sustenance, and wealth creation.</p>
+                        <button @click="scrollToView('#courses')" class="btn btn-warning rounded-0 me-2 px-4 mb-2">Available
+                            Courses
+                            <i class="fa fa-angle-right ms-2"></i></button>
+                        <a target="_blank" href="https://www.equilog.com.ng/en/contact"
+                            class="btn btn-outline-warning rounded-0 me-2 px-4 mb-2">Contact Us</a>
                     </div>
                 </div>
             </div>
         </template>
 
-        <h1 class="fw-bold mb-2 text-dark">A growing selection of courses</h1>
+        <h1 class="fw-bold mb-2 text-dark" id="courses">A growing selection of courses</h1>
         <div class="col-lg-8">
             <p class="lead">Choose from about 5+ hands-on, practical oriented courses. Complete the training with good
                 grades
@@ -89,7 +100,7 @@ let categories = [
         </div>
         <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
             <li class="nav-item" role="presentation" v-for="(tab, index) in categories" :key="index">
-                <button class="nav-link text-dark font-size-16 text-uppercase ps-0" :class="{ 'active': tab.active }"
+                <button class="nav-link text-dark font-size-14 text-uppercase ps-0" :class="{ 'active': tab.active }"
                     data-bs-toggle="tab" :data-bs-target="`#${tab.slug}`" type="button" role="tab">{{ tab.name }}</button>
             </li>
         </ul>
@@ -102,7 +113,8 @@ let categories = [
                     <p class="my-4">{{ tab.description }}</p>
                 </div>
                 <div class="row">
-                    <div class="col-lg-3" v-for="course in courses.filter(e => e.program == tab.category)" :key="course.id">
+                    <div class="col-lg-3 col-md-6" v-for="course in courses.filter(e => e.program == tab.category)"
+                        :key="course.id">
                         <CourseCard :course="course"></CourseCard>
                     </div>
                 </div>
@@ -134,17 +146,34 @@ let categories = [
 
 <style scoped>
 .banner {
-    background-color: #080807ef;
+    background-color: #040404;
     background-repeat: repeat;
     background-size: contain;
     background-blend-mode: overlay;
     background-position: center;
+    background-image: url('/assets/img/slide3.jpg');
+    background-attachment: fixed;
+    color: #fff !important;
 }
 
 .slider-images {
     width: 100%;
-    height: 80vh;
+    height: 90vh;
     object-fit: cover;
+}
+
+@media (max-width:500px) {
+    .slider-images {
+        width: 100%;
+        height: 40vh;
+        object-fit: cover;
+    }
+
+    .banner {
+        background-image: none;
+        background-color: #fff;
+        color: #000 !important;
+    }
 }
 
 .logo {

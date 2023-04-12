@@ -9,6 +9,7 @@ use App\Models\CohortGroupUsers;
 use App\Models\Course;
 use App\Models\CoursesUsers;
 use App\Models\Invoice;
+use App\Models\Messages;
 use App\Models\SiteOptions;
 use App\Models\Transaction;
 use App\Models\User;
@@ -227,7 +228,6 @@ class Admin extends Controller
     {
         $data['title'] = 'Create Course';
         $data['course'] = null;
-        // $data['course'] = ['name' => null, 'summary' => null, 'description' => null, 'status' => null, 'program' => null, 'cost' => null, 'discounted_cost' => null, 'duration' => null, 'banner' => null, 'date_of_commencement' => null, 'learning_methods' => ['virtual' => true, 'inclass' => true], 'banner' => null];
         return Inertia::render("Admin/Courses/Modify", $data);
     }
     public function courseSave(Request $request)
@@ -236,7 +236,6 @@ class Admin extends Controller
             'name' => 'required|unique:courses'
         ]);
         $input = $request->post();
-        $input['status'] = 1;
         $input['slug'] = Str::slug($input['name'], '-');
         $input['user_id'] = User::select('id')->first()->id;
         if ($request->hasFile('banner') && $request->file('banner')->isValid()) {
@@ -244,7 +243,11 @@ class Admin extends Controller
         }
         $id = Course::create($input);
         if ($id) {
-            return to_route('course.single', [$id, 'modify']);
+            return to_route('course.single', [$id, 'overview'])->with('message', [
+                'title' => "Course",
+                'content' => "Your new course has been created",
+                'status' => 'success'
+            ]);
         }
         return back()->with('message', [
             'title' => "New Course Created",
@@ -253,6 +256,7 @@ class Admin extends Controller
     }
     public function courseUpdate(Request $request, $id)
     {
+        dd($request->toArray());
         $input = $request->post();
         if ($request->hasFile('banner') && $request->file('banner')->isValid()) {
             $input['banner'] = $request->file('banner')->storeAs(date('Y'), $request->file('banner')->getClientOriginalName(), 'public');
@@ -352,11 +356,12 @@ class Admin extends Controller
         }
         $user = User::select('email', 'name')->find($input['user_id']);
         $invoice_link = route('invoice', [$input['id']]);
-        $content = "<h1>Dear {$user->name}</h1>
+        $content = "<h3>Dear {$user->name}</h3>
         <p>Your payment has been approved. You can now find your available courses at the courses section of your account</p>
         <p>You can view this invoice by clicking on the link <a href='$invoice_link'>$invoice_link</a></p>
         <p>Thank you for choosing equilog</p>";
         Mail::to($user)->send(new Email("Payment Approval", $content));
+        Messages::create(['sender_id' => Auth::id(), 'receiver_id' => $input['user_id'], 'subject' => 'Payment Approval', 'message' => $content]);
         return back()->with('message', [
             'title' => 'Invoice Status',
             'content' => "Payment Approved Successfully",
@@ -414,12 +419,13 @@ class Admin extends Controller
             $content = "Site cache has been cleared. You might encounter initial slow loading on some page";
         } elseif ($type == 'clear_activities_log') {
             Activity::truncate();
+            Messages::whereNotNull('sender_deleted_at')->whereNotNull('receiver_deleted_at')->delete();
             $content = "All activity logs has been cleared";
         } elseif ($type == 'create_symlink') {
             $exitCode = Artisan::call("storage:link");
             $content = "Symlink created";
         } elseif ($type == 'reset_platform') {
-            User::where('id', '!=', Auth::id())->delete();
+            User::where('id', '!=', Auth::id())->forceDelete();
             Activity::truncate();
             CohortGroup::truncate();
             CohortGroupUsers::truncate();
@@ -427,6 +433,7 @@ class Admin extends Controller
             CoursesUsers::truncate();
             Invoice::truncate();
             Transaction::truncate();
+            Messages::truncate();
             $content = "Tables Truncated. You are now the only user on the platform";
         }
         return back()->with('message', [

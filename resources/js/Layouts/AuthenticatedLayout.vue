@@ -16,6 +16,7 @@ const menus = {
         { name: 'My Account' },
         { name: 'Home', icon: 'fa-home', href: "myaccount.overview", active: [ 'MyAccount/Overview' ].includes( usePage().component ) },
         { name: 'Personal Info', icon: 'fa-id-card', href: "myaccount.personal-info", active: [ 'MyAccount/PersonalInfo' ].includes( usePage().component ) },
+        { name: 'Messages', icon: 'fa-envelope', href: "myaccount.messages", active: [ 'MyAccount/Messages/Inbox', 'MyAccount/Messages/Single', 'MyAccount/Messages/Compose' ].includes( usePage().component ) },
         { name: 'Security', icon: 'fa-lock', href: "myaccount.security", active: [ 'MyAccount/Security' ].includes( usePage().component ) },
         { name: 'Courses', icon: 'fa-book', href: "myaccount.courses", active: [ 'MyAccount/Courses' ].includes( usePage().component ) },
         { name: 'Payment & Invoices', icon: 'fa-credit-card', href: "myaccount.invoices", active: [ 'MyAccount/Invoices', 'MyAccount/Invoice' ].includes( usePage().component ) },
@@ -109,12 +110,12 @@ const toggleSidebar = () => {
                 </div>
                 <div class="container-fluid">
                     <div class="row d-print-none" v-if="breadcrumbs">
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
                             <div class="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 class="mb-0">{{ title }}</h4>
+                                <h5 class="mb-0">{{ title }}</h5>
 
                                 <div class="page-title-right">
-                                    <ol class="breadcrumb m-0">
+                                    <ol class="breadcrumb small">
                                         <li class="breadcrumb-item">
                                             <Link :href="route('myaccount.overview')">My Account</Link>
                                         </li>

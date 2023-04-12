@@ -19,7 +19,7 @@ class AuthorizedByRoleOnly
     public function handle(Request $request, Closure $next, ...$roles)
     {
         if (in_array('admin', $roles)) {
-            if (!Auth::user()->roles['admin']) {
+            if (!in_array('admin', Auth::user()->roles)) {
                 abort(404);
             }
         }

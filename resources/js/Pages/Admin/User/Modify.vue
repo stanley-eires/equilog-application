@@ -94,22 +94,22 @@ const form = useForm( props.user );
                         <div v-if="user.id">
                             <h6 class='bg-light p-2 my-3 text-uppercase'>Roles</h6>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="admin" :value="true"
-                                    v-model="form.roles.admin">
+                                <input class="form-check-input" type="checkbox" id="admin" value="admin"
+                                    v-model="form.roles">
                                 <label class="form-check-label" for="admin">
                                     Site Administrator
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="coordinator" disabled :value="true"
-                                    v-model="form.roles.coordinator">
+                                <input class="form-check-input" type="checkbox" id="coordinator" value="coordinatore"
+                                    v-model="form.roles">
                                 <label class="form-check-label" for="coordinator">
                                     Course Coordinator
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input disabled class="form-check-input" type="checkbox" id="subscriber" :value="true"
-                                    v-model="form.roles.subscriber">
+                                <input disabled class="form-check-input" type="checkbox" id="subscriber" value="subscriber"
+                                    v-model="form.roles">
                                 <label class="form-check-label" for="subscriber">
                                     Subscriber
                                 </label>
