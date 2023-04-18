@@ -38,7 +38,7 @@ const maintenance_functions = [
                 </div>
                 <div class="card card-body mb-3">
                     <h5 class="card-title mb-3">Maintenance Functions</h5>
-                    <ul class="list-unstyled lh-lg row row-cols-md-2">
+                    <ul class="list-unstyled lh-lg row row-cols-lg-3 row-cols-md-2">
                         <li v-for="func in maintenance_functions" :key="func">
                             <Link v-if="func.destructive"
                                 onclick="return prompt('This is a destructive action and should only be done by someone who knows the consequences.\n\nEnter: I UNDERSTAND in the input field below to continue') == 'I UNDERSTAND'"

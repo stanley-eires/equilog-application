@@ -18,7 +18,7 @@ const gridmenus = [
 <template>
     <AuthenticatedLayout :title="title">
         <div class="row">
-            <div class="col-lg-9 col-sm-12 mx-auto ">
+            <div class=" col-md-10 col-sm-12 mx-auto ">
                 <div class="row pt-5">
                     <div class="col-lg-4 mb-3">
                         <div class="card card-body text-center h-100">
@@ -33,7 +33,7 @@ const gridmenus = [
                                     </p>
                                     <div class="media text-left small">
                                         <div class="media-body text-truncate">
-                                            <i class="fa fa-envelope"></i>
+                                            <i class="fa fa-envelope me-1"></i>
                                             {{ $page.props.auth.user.email }}
                                         </div>
                                     </div>

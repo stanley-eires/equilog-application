@@ -34,7 +34,6 @@ const processPayment = ( response ) => {
         reference: response.reference,
         invoice: props.invoice.id
     } ).post( route( 'myaccount.invoice.payment-via-paystack' ) )
-    console.log( response )
 };
 
 
@@ -66,7 +65,7 @@ const handleUpload = () => {
     <AuthenticatedLayout :title="title">
         <div class="row">
             <div class="col-md-8">
-                <div class="card p-5 overflow-hidden" style="min-height:80vh;">
+                <div class="card p-2 p-md-5 overflow-hidden" style="min-height:80vh;">
                     <div v-if="invoice.status && invoice.payment_status" class='ribbon paid'>FULLY PAID</div>
                     <div v-else-if="!invoice.status && invoice.payment_status" class='ribbon partially'>PARTIALLY PAID
                     </div>
@@ -77,7 +76,7 @@ const handleUpload = () => {
                                 <button onclick="print()" class="btn btn-sm  d-print-none"><i
                                         class="fa fa-print me-2"></i>Print</button>
                             </div>
-                            <div class="text-end">
+                            <div class="text-center text-md-end">
                                 <img src="/assets/img/equilog_logo.png" alt="Equilog" style="width:150px">
                                 <div v-html="payment_config?.bank_transfer.transfer_details">
                                 </div>

@@ -7,6 +7,7 @@ import moment from 'moment';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import CounterUp from '@/Components/CounterUp.vue';
 import InvoicesList from '@/Components/InvoicesList.vue';
+import VueApexCharts from "vue3-apexcharts";
 
 const props = defineProps( { title: String, stats: Object, chartdata: Object } );
 let state = ref( {
@@ -90,7 +91,8 @@ let state = ref( {
                     </div>
 
                     <div class="mt-3">
-                        <apexchart type="bar" :height="350" :options="state.options" :series="state.series"></apexchart>
+                        <VueApexCharts type="bar" :height="350" :options="state.options" :series="state.series">
+                        </VueApexCharts>
                     </div>
                 </div>
             </div>

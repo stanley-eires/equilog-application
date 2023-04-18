@@ -14433,7 +14433,6 @@ body:not(.vertical-collpsed) .app-search {
     display: none
 }
 
-
 @media (max-width:991.98px) {
     .navbar-brand-box {
         width: auto
@@ -14549,7 +14548,6 @@ body:not(.vertical-collpsed) .app-search {
         display: none
     }
 }
-
 
 @media (max-width:374.99px) {
     .navbar-brand-box {
@@ -15664,7 +15662,6 @@ body[data-layout=horizontal][data-layout-size=boxed] .navbar-header {
 .fw-semibold {
     font-weight: 600
 }
-
 
 .w-xs {
     min-width: 80px
@@ -17009,6 +17006,3 @@ input[switch=dark]:checked+label {
     font-size: 24px;
     vertical-align: middle
 }
-
-
-/*# sourceMappingURL=app.min.css.map */

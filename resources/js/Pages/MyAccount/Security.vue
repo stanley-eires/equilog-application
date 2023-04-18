@@ -40,7 +40,7 @@ const updatePassword = () => {
                                     <th>Operating System</th>
                                     <th>Browser</th>
                                     <th>IP Address</th>
-                                    <th>Time Signed In</th>
+                                    <th>Signed In</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,14 +50,16 @@ const updatePassword = () => {
                                             <input class="form-check-input" type="checkbox">
                                         </div>
                                     </td>
-                                    <td><i class="fa me-1 " :class="i.value.desktop ? 'fa-desktop' : 'fa-mobile'"></i>
+                                    <td class="text-nowrap"><i class="fa me-1 "
+                                            :class="i.value.desktop ? 'fa-desktop' : 'fa-mobile'"></i>
                                         {{ i.value.platform }}
                                     </td>
-                                    <td><i class="fa me-1 " :class="`fa-${i.value.browser?.toLowerCase()}`"></i>
+                                    <td class="text-nowrap"><i class="fa me-1 "
+                                            :class="`fa-${i.value.browser?.toLowerCase()}`"></i>
                                         {{ i.value.browser }}
                                     </td>
-                                    <td>{{ i.value.ip }}</td>
-                                    <td>{{ humanizeTime(i.created_at) }}</td>
+                                    <td class="text-nowrap">{{ i.value.ip }}</td>
+                                    <td class="text-nowrap"> {{ humanizeTime(i.created_at) }}</td>
 
                                 </tr>
                             </tbody>

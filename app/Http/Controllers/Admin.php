@@ -356,7 +356,7 @@ class Admin extends Controller
         }
         $user = User::select('email', 'name')->find($input['user_id']);
         $invoice_link = route('invoice', [$input['id']]);
-        $content = "<h3>Dear {$user->name}</h3>
+        $content = "<p><strong>Dear {$user->name}</strong></p>
         <p>Your payment has been approved. You can now find your available courses at the courses section of your account</p>
         <p>You can view this invoice by clicking on the link <a href='$invoice_link'>$invoice_link</a></p>
         <p>Thank you for choosing equilog</p>";
@@ -396,7 +396,6 @@ class Admin extends Controller
     {
         $data['title'] = "Site Settings";
         $data['settings'] = SiteOptions::select('key', 'value', 'updated_at')->get();
-        //dd($data['settings']->toArray());
         return Inertia::render("Admin/Settings", $data);
     }
     public function saveSiteSettings(Request $request, $key)
@@ -416,6 +415,10 @@ class Admin extends Controller
         $content = null;
         if ($type == 'clear_cache') {
             $exitCode = Artisan::call("cache:clear");
+            $exitCode = Artisan::call("route:clear");
+            $exitCode = Artisan::call("view:clear");
+            $exitCode = Artisan::call("config:clear");
+
             $content = "Site cache has been cleared. You might encounter initial slow loading on some page";
         } elseif ($type == 'clear_activities_log') {
             Activity::truncate();

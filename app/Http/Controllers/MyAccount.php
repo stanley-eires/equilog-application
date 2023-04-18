@@ -36,10 +36,11 @@ class MyAccount extends Controller
     public function messages(Request $request, $segment = null, $message_id = null)
     {
 
-        $data['stats']['unread_count'] = Messages::where(['read_at' => NULL, 'receiver_id' => Auth::id()])->count();
+        $data['stats']['unread_count'] = Messages::where(['read_at' => NULL, 'receiver_deleted_at' => NULL, 'receiver_id' => Auth::id()])->count();
         $data['stats']['administrators'] = User::select('id', 'name', 'email', 'profile_picture')->whereJsonContains('roles', ['admin'])->get();
         if ($message_id) {
-            $data['message'] = Messages::join('users', 'users.id', '=', 'messages.sender_id')->select('messages.id', 'name as sender_name', 'profile_picture', 'email', 'subject', 'message', 'messages.created_at')->where('messages.id', $message_id)->first();
+            $data['segment'] = $segment;
+            $data['message'] = Messages::join('users', 'users.id', '=',  $segment == 'sent' ? 'messages.receiver_id' : 'messages.sender_id')->select('messages.id', 'receiver_id', 'name as sender_name', 'users.id as user_id', 'profile_picture', 'email', 'subject', 'message', 'messages.created_at')->where('messages.id', $message_id)->first();
             $data['title'] = $data['message']->subject;
             return Inertia::render('MyAccount/Messages/Single', $data);
         } elseif ($segment == 'compose' && $request->id) {
@@ -51,16 +52,23 @@ class MyAccount extends Controller
             }
             $data['title'] = "Compose Message";
             return Inertia::render('MyAccount/Messages/Compose', $data);
+        } elseif ($segment == 'sent') {
+            $data['title'] = "Sent";
+            $data['inbox'] = Messages::join('users', 'users.id', '=', 'messages.receiver_id')->select('messages.id', 'name as sender_name', 'subject', 'message', 'messages.created_at', 'read_at')->where(['sender_id' => Auth::id(), 'sender_deleted_at' => NULL])->latest()->paginate(10);
+            return Inertia::render('MyAccount/Messages/Sent', $data);
         } else {
             $data['title'] = "Inbox";
-            $data['inbox'] = Messages::join('users', 'users.id', '=', 'messages.sender_id')->select('messages.id', 'name as sender_name', 'subject', 'message', 'messages.created_at', 'read_at')->where(['receiver_id' => Auth::id()])->paginate(10);
+            $data['inbox'] = Messages::join('users', 'users.id', '=', 'messages.sender_id')->select('messages.id', 'name as sender_name', 'subject', 'message', 'messages.created_at', 'read_at')->where(['receiver_id' => Auth::id(), 'receiver_deleted_at' => NULL])->latest()->paginate(10);
         }
         return Inertia::render('MyAccount/Messages/Inbox', $data);
     }
 
-    public function updateMessage(Request $request, $id)
+    public function messageActions(Request $request)
     {
-        Messages::where(['messages.id' => $id])->update($request->post());
+        Messages::whereIn('messages.id', $request->id)->update($request->except(['segment', 'id']));
+        if ($request->segment) {
+            return to_route('myaccount.messages', [$request->segment]);
+        }
         return back();
     }
 
@@ -73,12 +81,12 @@ class MyAccount extends Controller
         }
         if ($request->as_email) {
             foreach ($users as $recipient) {
-                Mail::to($recipient)->send(new Email($request->subject, $request->message));
+                Mail::to($recipient)->send(new Email($request->subject, str_ireplace(['{$name}', '{$email}'], [$recipient->name, $recipient->email], $request->message)));
             }
         }
         foreach ($users as $recipient) {
             Messages::create([
-                'sender_id' => Auth::id(), 'receiver_id' => $recipient->user_id, 'subject' => $request->subject, 'message' => $request->message
+                'sender_id' => Auth::id(), 'receiver_id' => $recipient->user_id, 'subject' => $request->subject, 'message' => str_ireplace(['{$name}', '{$email}'], [$recipient->name, $recipient->email], $request->message)
             ]);
         }
 
@@ -108,7 +116,7 @@ class MyAccount extends Controller
 
         $data['invoices'] = $invoices;
 
-        $data['title'] = "Payments & Invoices";
+        $data['title'] = "Payments";
 
         return Inertia::render('MyAccount/Invoices', $data);
     }
@@ -178,13 +186,13 @@ class MyAccount extends Controller
         ]);
         $user = $request->user();
         $invoice_link = route('invoice', [$entry['invoice_id']]);
-        $content = "<h1>Dear {$user['name']}</h1>
+        $content = "<p><strong>Dear {$user['name']}</p></strong>
         <p>The administrators have been notified of your payment. You should get a mail shortly regarding the outcome of the evidence verification</p>
         <p>You can view the invoice by clicking on the link <a href='$invoice_link'>$invoice_link</a></p>
         <p>Thank you for choosing equilog</p>";
 
         Mail::to($user)->send(new Email("Evidence Upload Acknowlegement", $content));
-        $content = "<h1>Dear Administrator</h1>
+        $content = "<p><strong>Dear Administrator</p></strong>
         <p>A candidate <strong>{$user['name']}</strong> have just uploaded an evidence of payment via Bank transfer for some transactions worth <strong>NGN" . number_format($entry['amount']) . "</strong>. Please you are required to <a href='" . route('admin.invoices') . "'>verify and approve or decline</a> the payment made</p>
         <p>You can view the invoice by clicking on the link <a href='$invoice_link'>$invoice_link</a></p>
         <p>Thank you</p>";

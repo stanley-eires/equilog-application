@@ -114,7 +114,7 @@ const toggleSidebar = () => {
                             <div class="page-title-box d-flex align-items-center justify-content-between">
                                 <h5 class="mb-0">{{ title }}</h5>
 
-                                <div class="page-title-right">
+                                <div class="d-none d-md-block page-title-right">
                                     <ol class="breadcrumb small">
                                         <li class="breadcrumb-item">
                                             <Link :href="route('myaccount.overview')">My Account</Link>

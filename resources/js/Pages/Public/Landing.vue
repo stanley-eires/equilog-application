@@ -37,7 +37,7 @@ let categories = [
             </div>
         </div>
         <template #banner>
-            <div class="banner">
+            <div class="banner banner-main">
                 <div class="row align-items-center">
                     <div class="col-md-7">
                         <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
@@ -110,7 +110,7 @@ let categories = [
                 v-for="(tab, index) in categories" :key="index">
                 <div class="col-lg-9">
                     <h4>{{ tab.title }}</h4>
-                    <p class="my-4">{{ tab.description }}</p>
+                    <p class="my-4" style="text-align: justify;">{{ tab.description }}</p>
                 </div>
                 <div class="row">
                     <div class="col-lg-3 col-md-6" v-for="course in courses.filter(e => e.program == tab.category)"
@@ -165,11 +165,11 @@ let categories = [
 @media (max-width:500px) {
     .slider-images {
         width: 100%;
-        height: 40vh;
+        height: 50vh;
         object-fit: cover;
     }
 
-    .banner {
+    .banner-main {
         background-image: none;
         background-color: #fff;
         color: #000 !important;

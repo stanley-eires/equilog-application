@@ -47,15 +47,19 @@ let handleSubmit = () => {
             </div>
             <div class="mb-3">
                 <editor v-model="form.message" api-key="dk2z3jooyy5g31ivw3ah1ohaaj5jhc9pyq35bfwvcktbj3hl" :init="{
-                    height: '300',
+                    height: '220',
                     menubar: true,
                     plugins: 'code'
                 }" class="w-100 form-control"></editor>
             </div>
+            <div class="my-3">
+                <strong>Dynamic Insert:</strong>
+                <code>{$name}</code> <code>{$email}</code> (Would replace tags with actual values when exist)
+            </div>
             <div class="form-check form-switch">
                 <input class="form-check-input" v-model="form.as_email" type="checkbox" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Send a copy of this message to recepient(s)
-                    email address(es)</label>
+                <label class="form-check-label" for="flexSwitchCheckDefault">Send a copy of this message to
+                    {{ option.mode == 'group' ? "recepients email addresses" : "recepient email address" }} </label>
             </div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary"> <i class="fa fa-paper-plane-o me-2" aria-hidden="true"></i>

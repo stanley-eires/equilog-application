@@ -39,7 +39,7 @@ Route::prefix('myaccount')->group(
 
             Route::get('messages/{segment?}/{message?}', [MyAccount::class, 'messages'])->name('myaccount.messages');
             Route::post('messages', [MyAccount::class, 'sendMessage'])->name('myaccount.sendmessage');
-            Route::put('messages/{id}', [MyAccount::class, 'updateMessage'])->name('myaccount.updatemessage');
+            Route::put('messages', [MyAccount::class, 'messageActions'])->name('myaccount.updatemessage');
 
 
             Route::get('security', [MyAccount::class, 'security'])->name('myaccount.security');
